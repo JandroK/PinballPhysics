@@ -105,6 +105,28 @@ update_status ModuleSceneIntro::Update()
 		ricks.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), rick_head, 64));
 	}
 
+
+	// Flipper Torque
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	{
+		p2List_item<b2Body*>* data = App->physics->flippersL.getFirst();
+		while (data != NULL)
+		{
+			data->data->ApplyTorque(-500, true);
+			data = data->next;
+		}
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	{
+		p2List_item<b2Body*>* data = App->physics->flippersR.getFirst();
+		while (data != NULL)
+		{
+			data->data->ApplyTorque(500, true);
+			data = data->next;
+		}
+	}
+
 	// Prepare for raycast ------------------------------------------------------
 	
 	iPoint mouse;

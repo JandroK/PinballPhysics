@@ -52,6 +52,17 @@ public:
 
 private:
 
+	// Create a Left flipper with pivot in position x y
+	void CreateFlipperL(int x, int y);
+
+	// Create a Rigth flipper with pivot in position x y
+	void CreateFlipperR(int x, int y);
+	
+	// Create a pair of flippers 
+	//x,y: the position of the left pivot
+	//separation: distance between left and right pivot (minim 200) 
+	void CreatePairFlippers(int x, int y, int separation);
+
 	bool debug;
 	b2World* world;
 	b2MouseJoint* mouse_joint;
@@ -60,4 +71,12 @@ private:
 	PhysBody* bodyClicked;
 	bool isClicked = false;
 	b2MouseJointDef def;
+
+	b2RevoluteJointDef JoinFlipper;
+	p2List<b2Body*> pivotJoins;
+
+public:
+
+	p2List<b2Body*> flippersL;
+	p2List<b2Body*> flippersR;
 };

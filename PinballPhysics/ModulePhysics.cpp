@@ -54,10 +54,14 @@ bool ModulePhysics::Start()
 	fixture.shape = &shape;
 	big_ball->CreateFixture(&fixture);
 
+	CreateFlipperL(20, 200);
+	CreateFlipperR(100, 100);
+
+	CreatePairFlippers(20, 300, 200);
+
 	return true;
 }
 
-// 
 update_status ModulePhysics::PreUpdate()
 {
 	world->Step(1.0f / 60.0f, 6, 2);
@@ -186,7 +190,6 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	return pbody;
 }
 
-// 
 update_status ModulePhysics::PostUpdate()
 {
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
@@ -326,7 +329,6 @@ update_status ModulePhysics::PostUpdate()
 	return UPDATE_CONTINUE;
 }
 
-
 // Called before quitting
 bool ModulePhysics::CleanUp()
 {
@@ -409,4 +411,110 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 
 	if(physB && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
+}
+
+void ModulePhysics::CreateFlipperL(int x, int y)
+{
+	// Pivot
+	int w = 2;
+	int h = 2;
+	b2BodyDef body;
+	b2FixtureDef fixture;
+	b2PolygonShape box;
+
+	body.type = b2_staticBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	pivotJoins.add(world->CreateBody(&body));
+	box.SetAsBox(PIXEL_TO_METERS(w) * 0.5f, PIXEL_TO_METERS(h) * 0.5f);
+	fixture.shape = &box;
+
+	pivotJoins.getLast()->data->CreateFixture(&fixture);
+
+	// Flipper
+
+	x += 30;
+	w = 80;
+	h = 20;
+
+	body.type = b2_dynamicBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	flippersL.add(world->CreateBody(&body));
+	box.SetAsBox(PIXEL_TO_METERS(w) * 0.5f, PIXEL_TO_METERS(h) * 0.5f);
+	fixture.shape = &box;
+	fixture.density = 2;
+
+	flippersL.getLast()->data->CreateFixture(&fixture);
+
+	// Join
+
+	JoinFlipper.Initialize(pivotJoins.getLast()->data, flippersL.getLast()->data, pivotJoins.getLast()->data->GetWorldCenter());
+	JoinFlipper.lowerAngle = -0.25f * b2_pi; // -90 grados
+	JoinFlipper.upperAngle = 0.25f * b2_pi; // 45 grados
+	JoinFlipper.enableLimit = true;
+	JoinFlipper.maxMotorTorque = 10.0f;
+	JoinFlipper.motorSpeed = 3.0f;
+	JoinFlipper.enableMotor = true;
+
+	world->CreateJoint(&JoinFlipper);
+
+	flippersL.getLast()->data->IsBullet();
+}
+
+void ModulePhysics::CreateFlipperR(int x, int y)
+{
+	// Pivot
+	int w = 2;
+	int h = 2;
+	b2BodyDef body;
+	body.type = b2_staticBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+
+	pivotJoins.add(world->CreateBody(&body));
+
+	b2FixtureDef fixture;
+	b2PolygonShape box;
+
+	box.SetAsBox(PIXEL_TO_METERS(w) * 0.5f, PIXEL_TO_METERS(h) * 0.5f);
+	fixture.shape = &box;
+
+	pivotJoins.getLast()->data->CreateFixture(&fixture);
+
+	// Flipper
+
+	x -= 30;
+	w = 80;
+	h = 20;
+
+	body.type = b2_dynamicBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	flippersR.add(world->CreateBody(&body));
+	box.SetAsBox(PIXEL_TO_METERS(w) * 0.5f, PIXEL_TO_METERS(h) * 0.5f);
+	fixture.shape = &box;
+	fixture.density = 2;
+
+	flippersR.getLast()->data->CreateFixture(&fixture);
+
+	// Join
+
+	JoinFlipper.Initialize(pivotJoins.getLast()->data, flippersR.getLast()->data, pivotJoins.getLast()->data->GetWorldCenter());
+	JoinFlipper.lowerAngle = -0.25f * b2_pi; // -90 grados
+	JoinFlipper.upperAngle = 0.25f * b2_pi; // 45 grados
+	JoinFlipper.enableLimit = true;
+	JoinFlipper.maxMotorTorque = 10.0f;
+	JoinFlipper.motorSpeed = -3.0f;
+	JoinFlipper.enableMotor = true;
+
+	world->CreateJoint(&JoinFlipper);
+
+	flippersR.getLast()->data->IsBullet();
+}
+
+void ModulePhysics::CreatePairFlippers(int x, int y, int separation)
+{
+	CreateFlipperL(x, y);
+	CreateFlipperR(x+separation, y);
 }
