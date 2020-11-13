@@ -29,7 +29,7 @@ bool ModuleSceneIntro::Start()
 	box = App->textures->Load("pinball/crate.png");
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
-
+	bg = App->textures->Load("pinball/pinball_bg.png");
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
 	return ret;
@@ -39,7 +39,11 @@ bool ModuleSceneIntro::Start()
 bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
-
+	Mix_HaltMusic();
+	App->textures->Unload(bg);
+	App->textures->Unload(circle);
+	App->textures->Unload(box);
+	App->textures->Unload(rick);
 	return true;
 }
 
@@ -55,7 +59,7 @@ update_status ModuleSceneIntro::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
+		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25, true));
 		circles.getLast()->data->listener = this;
 	}
 
@@ -137,6 +141,12 @@ update_status ModuleSceneIntro::Update()
 	fVector normal(0.0f, 0.0f);
 
 	// All draw functions ------------------------------------------------------
+	App->renderer->Blit(bg, 0, 0);
+
+	App->physics->CreateCircle(138, 189, 30, false);
+	App->physics->CreateCircle(118, 254, 30, false);
+	App->physics->CreateCircle(188, 238, 30, false);
+
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
 	while(c != NULL)

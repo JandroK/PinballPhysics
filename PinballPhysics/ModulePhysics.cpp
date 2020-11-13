@@ -37,27 +37,166 @@ bool ModulePhysics::Start()
 	ground = world->CreateBody(&bd);
 
 	// big static circle as "ground" in the middle of the screen
-	int x = SCREEN_WIDTH / 2;
-	int y = SCREEN_HEIGHT / 1.5f;
-	int diameter = SCREEN_WIDTH / 2;
+	int pinball_background[140] = {
+		148,11,
+		108,23,
+		56,66,
+		25,131,
+		18,223,
+		44,360,
+		67,424,
+		48,452,
+		55,520,
+		28,557,
+		28,594,
+		54,624,
+		54,676,
+		12,684,
+		13,800,
+		53,842,
+		53,914,
+		82,914,
+		82,835,
+		42,789,
+		42,721,
+		54,721,
+		54,768,
+		144,820,
+		138,841,
+		168,865,
+		168,913,
+		302,913,
+		302,865,
+		332,844,
+		326,818,
+		380,789,
+		380,719,
+		395,720,
+		395,818,
+		372,852,
+		372,912,
+		400,912,
+		400,859,
+		422,826,
+		422,695,
+		414,684,
+		381,684,
+		383,647,
+		423,607,
+		423,575,
+		379,526,
+		395,452,
+		397,404,
+		385,389,
+		351,389,
+		330,413,
+		321,423,
+		320,378,
+		374,361,
+		380,352,
+		379,337,
+		371,325,
+		402,312,
+		422,288,
+		422,132,
+		436,132,
+		436,830,
+		467,830,
+		467,128,
+		458,82,
+		434,52,
+		397,23,
+		346,12,
+		310,10
+	};
+	App->physics->CreateChain(0, 0, pinball_background, 140);
 
-	b2BodyDef body;
-	body.type = b2_staticBody;
-	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	int triangleLeft[8] = {
+		124,720,
+		152,770,
+		152,784,
+		120,768
+	};
+	App->physics->CreateChain(0, 0, triangleLeft, 8);
+	int triangleRight[8] = {
+		350,720,
+		320,770,
+		320,784,
+		352,768
+	};
+	App->physics->CreateChain(0, 0, triangleRight, 8);
+	int segmentLeft[14] = {
+		73,542,
+		107,635,
+		107,656,
+		84,670,
+		84,618,
+		56,581,
+		56,566
+	};
+	App->physics->CreateChain(0, 0, segmentLeft, 14);
+	int segmentRight[14] = {
+		368,555,
+		332,683,
+		352,685,
+		352,652,
+		366,627,
+		395,600,
+		395,581
+	};
+	App->physics->CreateChain(0, 0, segmentRight, 14);
+	int segmentSmall[12] = {
+		207,369,
+		241,378,
+		242,398,
+		252,406,
+		253,432,
+		211,416
+	};
+	App->physics->CreateChain(0, 0, segmentSmall, 12);
+	int segmentBig[52] = {
+		167,316,
+		175,372,
+		175,405,
+		86,341,
+		61,290,
+		51,235,
+		52,170,
+		68,111,
+		95,75,
+		133,49,
+		171,42,
+		310,42,
+		310,57,
+		204,57,
+		173,66,
+		154,83,
+		147,105,
+		125,107,
+		101,117,
+		85,138,
+		72,170,
+		68,206,
+		68,250,
+		77,276,
+		112,296,
+		160,317,
+	};
+	App->physics->CreateChain(0, 0, segmentBig, 52);
+	int corner[12] = {
+		309,88,
+		309,150,
+		293,123,
+		270,103,
+		191,103,
+		207,88
+	};
+	App->physics->CreateChain(0, 0, corner, 12);
 
-	b2Body* big_ball = world->CreateBody(&body);
+	//CreateFlipperL(154, 837);
+	//CreateFlipperR(100, 100);
 
-	b2CircleShape shape;
-	shape.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
-
-	b2FixtureDef fixture;
-	fixture.shape = &shape;
-	big_ball->CreateFixture(&fixture);
-
-	CreateFlipperL(20, 200);
-	CreateFlipperR(100, 100);
-
-	CreatePairFlippers(20, 300, 200);
+	CreatePairFlippers(156, 837, 163);
 
 	return true;
 }
@@ -80,10 +219,11 @@ update_status ModulePhysics::PreUpdate()
 	return UPDATE_CONTINUE;
 }
 
-PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
+PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	if (dynamic == true)body.type = b2_dynamicBody;
+	else body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
@@ -159,7 +299,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
