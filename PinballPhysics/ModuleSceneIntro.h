@@ -29,6 +29,7 @@ public:
 	SDL_Texture* box;
 	SDL_Texture* rick;
 	SDL_Texture* bg;
+	SDL_Texture* assets;
 	uint bonus_fx;
 	p2Point<int> ray;
 	bool ray_on;

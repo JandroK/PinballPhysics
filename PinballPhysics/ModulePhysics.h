@@ -77,6 +77,6 @@ private:
 
 public:
 
-	p2List<b2Body*> flippersL;
-	p2List<b2Body*> flippersR;
+	p2List<PhysBody*> flippersL;
+	p2List<PhysBody*> flippersR;
 };

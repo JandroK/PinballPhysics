@@ -30,6 +30,7 @@ bool ModuleSceneIntro::Start()
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	bg = App->textures->Load("pinball/pinball_bg.png");
+	assets = App->textures->Load("pinball/background.png");
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
 	return ret;
@@ -41,6 +42,7 @@ bool ModuleSceneIntro::CleanUp()
 	LOG("Unloading Intro scene");
 	Mix_HaltMusic();
 	App->textures->Unload(bg);
+	App->textures->Unload(assets);
 	App->textures->Unload(circle);
 	App->textures->Unload(box);
 	App->textures->Unload(rick);
@@ -59,7 +61,7 @@ update_status ModuleSceneIntro::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25, true));
+		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 12, true));
 		circles.getLast()->data->listener = this;
 	}
 
@@ -113,20 +115,20 @@ update_status ModuleSceneIntro::Update()
 	// Flipper Torque
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		p2List_item<b2Body*>* data = App->physics->flippersL.getFirst();
+		p2List_item<PhysBody*>* data = App->physics->flippersL.getFirst();
 		while (data != NULL)
 		{
-			data->data->ApplyTorque(-500, true);
+			data->data->body->ApplyTorque(-500, true);
 			data = data->next;
 		}
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		p2List_item<b2Body*>* data = App->physics->flippersR.getFirst();
+		p2List_item<PhysBody*>* data = App->physics->flippersR.getFirst();
 		while (data != NULL)
 		{
-			data->data->ApplyTorque(500, true);
+			data->data->body->ApplyTorque(500, true);
 			data = data->next;
 		}
 	}
@@ -142,11 +144,12 @@ update_status ModuleSceneIntro::Update()
 
 	// All draw functions ------------------------------------------------------
 	App->renderer->Blit(bg, 0, 0);
-
-	App->physics->CreateCircle(138, 189, 30, false);
-	App->physics->CreateCircle(118, 254, 30, false);
-	App->physics->CreateCircle(188, 238, 30, false);
-
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT)
+	{
+		App->physics->CreateCircle(138, 189, 30, false);
+		App->physics->CreateCircle(118, 254, 30, false);
+		App->physics->CreateCircle(188, 238, 30, false);
+	}
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
 	while(c != NULL)
@@ -154,7 +157,7 @@ update_status ModuleSceneIntro::Update()
 		int x, y;
 		c->data->GetPosition(x, y);
 		//if(c->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
-			App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
+			//App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
 
@@ -183,6 +186,25 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(rick, x, y, NULL, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
+	/// ------ Kikers------------
+	 c= App->physics->flippersL.getFirst();
+	SDL_Rect rect = {1899,12,73,39};
+	while(c != NULL)
+	{
+		int x, y;
+		c->data->GetPosition(x, y);
+		App->renderer->Blit(assets, x-39, y-25, &rect, 1.0f, c->data->GetRotation()- (RADTODEG*0.50));
+		c = c->next;
+	}
+	 c= App->physics->flippersR.getFirst();
+	 rect = { 2067,12,73,39};
+	while(c != NULL)
+	{
+		int x, y;
+		c->data->GetPosition(x, y);
+		App->renderer->Blit(assets, x-39, y-22, &rect, 1.0f, c->data->GetRotation()+ (RADTODEG*0.50));
+		c = c->next;
+	}
 
 	// ray -----------------
 	if(ray_on == true)
@@ -204,7 +226,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
 
-	App->audio->PlayFx(bonus_fx);
+	//App->audio->PlayFx(bonus_fx);
 
 	/*
 	if(bodyA)
