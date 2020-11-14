@@ -18,8 +18,7 @@
 
 #ifndef B2_PRISMATIC_JOINT_H
 #define B2_PRISMATIC_JOINT_H
-
-#include "Dynamics/Joints/b2Joint.h"
+#include "b2PrismaticJoint.h"
 
 /// Prismatic joint definition. This requires defining a line of
 /// motion using an axis and an anchor point. The definition uses local

@@ -5,6 +5,14 @@
 #include "Globals.h"
 
 class PhysBody;
+struct b2PrismaticJoint;
+
+
+struct Kicker {
+	PhysBody* anchor;
+	PhysBody* body;
+	b2PrismaticJoint* joint;
+};
 
 class ModuleSceneIntro : public Module
 {
@@ -19,18 +27,18 @@ public:
 
 public:
 	p2List<PhysBody*> circles;
-	p2List<PhysBody*> boxes;
-	p2List<PhysBody*> ricks;
-
 	PhysBody* sensor;
 	bool sensed;
 
 	SDL_Texture* circle;
-	SDL_Texture* box;
-	SDL_Texture* rick;
 	SDL_Texture* bg;
 	SDL_Texture* assets;
 	uint bonus_fx;
 	p2Point<int> ray;
 	bool ray_on;
+
+	SDL_Rect kikerRect;
+
+	Kicker kiker;
+
 };

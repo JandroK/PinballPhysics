@@ -6,10 +6,10 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include "p2Defs.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	circle = box = rick = NULL;
 	ray_on = false;
 	sensed = false;
 }
@@ -25,13 +25,26 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	circle = App->textures->Load("pinball/wheel.png"); 
-	box = App->textures->Load("pinball/crate.png");
-	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	bg = App->textures->Load("pinball/pinball_bg.png");
 	assets = App->textures->Load("pinball/background.png");
-	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
+	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT+35, SCREEN_WIDTH, 25);
+
+	//Kicker	
+	kikerRect = { 0,0,27,27 };
+	kiker.anchor = App->physics->CreateStaticRectangle(455, 820, 5, 5);
+	kiker.body = App->physics->CreateRectangle(455, 750, 20, 10);
+	kiker.joint = App->physics->CreatePrismaticJoint(kiker.anchor, kiker.body, 1, -80, -20, 50);
+
+	circles.add(App->physics->CreateCircle(450, 730, 12, true));
+	circles.getLast()->data->listener = this;
+
+	// Bouncer bols
+	float bouncerBallsRestitution=2;
+	App->physics->CreateCircle(138, 189, 15, false, bouncerBallsRestitution);
+	App->physics->CreateCircle(118, 254, 15, false, bouncerBallsRestitution);
+	App->physics->CreateCircle(188, 238, 15, false, bouncerBallsRestitution);
+
 
 	return ret;
 }
@@ -44,14 +57,49 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(bg);
 	App->textures->Unload(assets);
 	App->textures->Unload(circle);
-	App->textures->Unload(box);
-	App->textures->Unload(rick);
 	return true;
+	LOG("Unloading map");
+
+	// Remove circles
+
+	p2List_item<PhysBody*>* item;
+	item = circles.getFirst();
+
+	int counter = 1;
+	while (item != NULL)
+	{
+		RELEASE(item->data);
+		item = item->next;
+
+	}
+
+	circles.clear();
+	LOG("Unloading circles");
 }
 
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	iPoint launch_pos;
+	kiker.body->GetPosition(launch_pos.x, launch_pos.y);
+	launch_pos.x -= kiker.body->width;
+	launch_pos.y -= kiker.body->height;
+	App->renderer->Blit(assets, launch_pos.x , launch_pos.y , &kikerRect);
+
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+
+		kiker.joint->SetMotorSpeed(3);
+		kiker.joint->SetMaxMotorForce(3);
+
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_UP) {
+		kiker.joint->SetMotorSpeed(-20);
+		kiker.joint->SetMaxMotorForce(900);
+
+		//App->audio->PlayFx();
+	}
+
+
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		ray_on = !ray_on;
@@ -63,52 +111,6 @@ update_status ModuleSceneIntro::Update()
 	{
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 12, true));
 		circles.getLast()->data->listener = this;
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 100, 50));
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		// Pivot 0, 0
-		int rick_head[64] = {
-			14, 36,
-			42, 40,
-			40, 0,
-			75, 30,
-			88, 4,
-			94, 39,
-			111, 36,
-			104, 58,
-			107, 62,
-			117, 67,
-			109, 73,
-			110, 85,
-			106, 91,
-			109, 99,
-			103, 104,
-			100, 115,
-			106, 121,
-			103, 125,
-			98, 126,
-			95, 137,
-			83, 147,
-			67, 147,
-			53, 140,
-			46, 132,
-			34, 136,
-			38, 126,
-			23, 123,
-			30, 114,
-			10, 102,
-			29, 90,
-			0, 75,
-			30, 62
-		};
-
-		ricks.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), rick_head, 64));
 	}
 
 
@@ -146,49 +148,28 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(bg, 0, 0);
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT)
 	{
-		App->physics->CreateCircle(138, 189, 30, false);
-		App->physics->CreateCircle(118, 254, 30, false);
-		App->physics->CreateCircle(188, 238, 30, false);
+		
+		
 	}
-	p2List_item<PhysBody*>* c = circles.getFirst();
 
+	// Circle  -----------------------------------------//////
+	p2List_item<PhysBody*>* c = circles.getFirst();
+	SDL_Rect rect = {1723,18,27,27};
 	while(c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
 		//if(c->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
-			//App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
+		App->renderer->Blit(assets, x, y, &rect, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
 
-	c = boxes.getFirst();
+	
 
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(box, x, y, NULL, 1.0f, c->data->GetRotation());
-		if(ray_on)
-		{
-			int hit = c->data->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);
-			if(hit >= 0)
-				ray_hit = hit;
-		}
-		c = c->next;
-	}
-
-	c = ricks.getFirst();
-
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(rick, x, y, NULL, 1.0f, c->data->GetRotation());
-		c = c->next;
-	}
-	/// ------ Kikers------------
+	
+	/// ------ Pala------------
 	 c= App->physics->flippersL.getFirst();
-	SDL_Rect rect = {1899,12,73,39};
+	 rect = {1899,12,73,39};
 	while(c != NULL)
 	{
 		int x, y;
@@ -219,14 +200,29 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
 
+	/// Delete Ball / Spawn next Ball
+	if (sensed)
+	{
+		circles.getLast()->data->body->GetWorld()->DestroyBody(circles.getLast()->data->body);
+		circles.del(circles.getLast());
+		circles.add(App->physics->CreateCircle(450, 720, 12, true));
+		circles.getLast()->data->listener = this;
+
+		sensed = false;
+	}
 	return UPDATE_CONTINUE;
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
+	
+		if (bodyA == sensor  ||	bodyB == sensor ) {
 
-	//App->audio->PlayFx(bonus_fx);
+			App->audio->PlayFx(bonus_fx);
+			sensed = true;
+
+		}
 
 	/*
 	if(bodyA)

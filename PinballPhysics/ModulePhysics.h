@@ -42,10 +42,14 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateCircle(int x, int y, int radius, bool dynamic);
+	PhysBody* CreateCircle(int x, int y, int radius, bool dynamic, float _restitution=0);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
-	PhysBody* CreateChain(int x, int y, int* points, int size);
+	PhysBody* CreateChain(int x, int y, int* points, int size, float _restitution=0);
+	PhysBody* CreateStaticRectangle(int x, int y, int width, int height, int _restitution=0);
+	b2PrismaticJoint* CreatePrismaticJoint(PhysBody* anchor, PhysBody* body, int max_move, int min_move, int motor_speed, int max_force);
+
+
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
@@ -79,4 +83,6 @@ public:
 
 	p2List<PhysBody*> flippersL;
 	p2List<PhysBody*> flippersR;
+	p2List<PhysBody*> circlesToDelete;
+
 };
