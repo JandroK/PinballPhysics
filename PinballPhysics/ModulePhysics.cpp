@@ -112,20 +112,22 @@ bool ModulePhysics::Start()
 	};
 	App->physics->CreateChain(0, 0, pinball_background, 140);
 
-	int triangleLeft[8] = {
-		124,720,
-		152,770,
-		152,784,
+	int triangleLeft[10] = {
+		124,721,
+		129,721,
+		153,775,
+		151,784,
 		120,768
 	};
-	App->physics->CreateChain(0, 0, triangleLeft, 8,2);
-	int triangleRight[8] = {
+	App->physics->CreateChain(0, 0, triangleLeft, 10,2);
+	int triangleRight[10] = {
 		350,720,
-		320,770,
-		320,784,
-		352,768
+		345,720,
+		320,773,
+		322,784,
+		352,773
 	};
-	App->physics->CreateChain(0, 0, triangleRight, 8,2);
+	App->physics->CreateChain(0, 0, triangleRight, 10,2);
 	int segmentLeft[14] = {
 		73,542,
 		107,635,
@@ -139,11 +141,11 @@ bool ModulePhysics::Start()
 	int segmentRight[14] = {
 		368,555,
 		332,683,
-		352,685,
-		352,652,
-		366,627,
-		395,600,
-		395,581
+		350,685,
+		350,652,
+		362,627,
+		393,600,
+		393,581
 	};
 	App->physics->CreateChain(0, 0, segmentRight, 14);
 	int segmentSmall[12] = {
@@ -677,7 +679,7 @@ void ModulePhysics::CreateFlipperR(int x, int y)
 	JoinFlipper.lowerAngle = -0.14f * b2_pi; 
 	JoinFlipper.upperAngle = 0.25f * b2_pi; 
 	JoinFlipper.enableLimit = true;
-	JoinFlipper.maxMotorTorque = 10.0f;
+	JoinFlipper.maxMotorTorque = 8.0f;
 	JoinFlipper.motorSpeed = -3.5f;
 	JoinFlipper.enableMotor = true;
 

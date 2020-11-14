@@ -38,7 +38,6 @@ public:
 	bool ray_on;
 
 	SDL_Rect kikerRect;
-
 	Kicker kiker;
 
 };

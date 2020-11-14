@@ -120,7 +120,7 @@ update_status ModuleSceneIntro::Update()
 		p2List_item<PhysBody*>* data = App->physics->flippersL.getFirst();
 		while (data != NULL)
 		{
-			data->data->body->ApplyTorque(-500, true);
+			data->data->body->ApplyTorque(-400, true);
 			data = data->next;
 		}
 	}
@@ -130,7 +130,7 @@ update_status ModuleSceneIntro::Update()
 		p2List_item<PhysBody*>* data = App->physics->flippersR.getFirst();
 		while (data != NULL)
 		{
-			data->data->body->ApplyTorque(500, true);
+			data->data->body->ApplyTorque(400, true);
 			data = data->next;
 		}
 	}
