@@ -37,7 +37,7 @@ bool ModulePhysics::Start()
 	b2BodyDef bd;
 	ground = world->CreateBody(&bd);
 
-	// big static circle as "ground" in the middle of the screen
+	// outline of map
 	int pinball_background[140] = {
 		148,11,
 		108,23,
@@ -62,7 +62,7 @@ bool ModulePhysics::Start()
 		42,721,
 		54,721,
 		54,768,
-		144,820,
+		146,822,
 		138,841,
 		168,865,
 		168,913,
@@ -110,8 +110,7 @@ bool ModulePhysics::Start()
 		346,12,
 		310,10
 	};
-	App->physics->CreateChain(0, 0, pinball_background, 140);
-
+	CreateChain(0, 0, pinball_background, 140);
 	int triangleLeft[10] = {
 		124,721,
 		129,721,
@@ -119,7 +118,7 @@ bool ModulePhysics::Start()
 		151,784,
 		120,768
 	};
-	App->physics->CreateChain(0, 0, triangleLeft, 10,2);
+	CreateChain(0, 0, triangleLeft, 10,2);
 	int triangleRight[10] = {
 		350,720,
 		345,720,
@@ -127,7 +126,7 @@ bool ModulePhysics::Start()
 		322,784,
 		352,773
 	};
-	App->physics->CreateChain(0, 0, triangleRight, 10,2);
+	CreateChain(0, 0, triangleRight, 10,2);
 	int segmentLeft[14] = {
 		73,542,
 		107,635,
@@ -137,7 +136,7 @@ bool ModulePhysics::Start()
 		56,581,
 		56,566
 	};
-	App->physics->CreateChain(0, 0, segmentLeft, 14);
+	CreateChain(0, 0, segmentLeft, 14);
 	int segmentRight[14] = {
 		368,555,
 		332,683,
@@ -147,7 +146,7 @@ bool ModulePhysics::Start()
 		393,600,
 		393,581
 	};
-	App->physics->CreateChain(0, 0, segmentRight, 14);
+	CreateChain(0, 0, segmentRight, 14);
 	int segmentSmall[12] = {
 		207,369,
 		241,378,
@@ -156,9 +155,9 @@ bool ModulePhysics::Start()
 		253,432,
 		211,416
 	};
-	App->physics->CreateChain(0, 0, segmentSmall, 12);
-	int segmentBig[52] = {
-		167,316,
+	CreateChain(0, 0, segmentSmall, 12);
+	int segmentBigCollision[52] = {
+		190,330,
 		175,372,
 		175,405,
 		86,341,
@@ -185,22 +184,61 @@ bool ModulePhysics::Start()
 		112,296,
 		160,317,
 	};
-	App->physics->CreateChain(0, 0, segmentBig, 52);
-	int corner[12] = {
+	segmentBig=CreateChain(0, 0, segmentBigCollision, 52);
+	int cornerCollision[12] = {
 		309,88,
 		309,150,
 		293,123,
 		270,103,
-		191,103,
+		147,103,
 		207,88
 	};
-	App->physics->CreateChain(0, 0, corner, 12);
+	corner=CreateChain(0, 0, cornerCollision, 12);
+	int pieceCentralRed[26] = {
+		105, 173,
+		115, 152,
+		139, 140,
+		185, 133,
+		232, 133,
+		251, 146,
+		255, 160,
+		248, 169,
+		164, 170,
+		141, 160,
+		120, 165,
+		115, 175,
+		107, 174
+	};
+	pieceRed = CreateChain(0, 0, pieceCentralRed, 26);
+	int rampVertex[28] = {
+		175,405,
+		175,372,
+		167,316,
+		147,105,
+		154,83,
+		173,66,
+		204,57,
+		310,57,
+		310,88,
+		207,88,
+		191,103,
+		181,118,
+		207,369,
+		211,416
+	};
+	ramp=CreateChain(0, 0, rampVertex, 28);
+	ramp->body->SetActive(false);
+	// Bouncer bols
+	float bouncerBallsRestitution = 2;
+	CreateCircle(138, 189, 15, false, bouncerBallsRestitution);
+	CreateCircle(118, 254, 15, false, bouncerBallsRestitution);
+	bouncerBall = CreateCircle(188, 238, 15, false, bouncerBallsRestitution);
 
 	//CreateFlipperL(154, 837);
 	//CreateFlipperR(100, 100);
 
 	CreatePairFlippers(154, 837, 169);
-	CreatePairFlippers(195, 345, 175);
+	CreatePairFlippers(197, 345, 173);
 
 	return true;
 }
@@ -594,7 +632,6 @@ void ModulePhysics::CreateFlipperL(int x, int y)
 
 	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x + 0.16f), PIXEL_TO_METERS(y + 0.08f));
-
 	pivotJoins.add(world->CreateBody(&body));
 	box.SetAsBox(PIXEL_TO_METERS(w) * 0.5f, PIXEL_TO_METERS(h) * 0.5f);
 	fixture.shape = &box;

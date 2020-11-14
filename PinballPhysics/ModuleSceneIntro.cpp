@@ -40,15 +40,13 @@ bool ModuleSceneIntro::Start()
 	circles.add(App->physics->CreateCircle(450, 730, 12, true));
 	circles.getLast()->data->listener = this;
 
-	// Bouncer bols
-	float bouncerBallsRestitution=2;
-	App->physics->CreateCircle(138, 189, 15, false, bouncerBallsRestitution);
-	App->physics->CreateCircle(118, 254, 15, false, bouncerBallsRestitution);
-	App->physics->CreateCircle(188, 238, 15, false, bouncerBallsRestitution);
-
 	//Sensors
-	sensorsList.add(KickerPathSensor = App->physics->CreateRectangleSensor(420, 90, 5, 85));
 	sensorsList.add(sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 35, SCREEN_WIDTH, 25));
+	sensorsList.add(kickerPathSensor = App->physics->CreateRectangleSensor(420, 90, 5, 85));
+	sensorsList.add(rampSensor = App->physics->CreateRectangleSensor(192, 370, 5, 5));
+	sensorsList.add(rampSensor2 = App->physics->CreateRectangleSensor(270, 74, 5, 5));
+	sensorsList.add(rampSensorBack = App->physics->CreateRectangleSensor(192, 405, 5, 5));
+	sensorsList.add(rampSensorBack2 = App->physics->CreateRectangleSensor(305, 74, 5, 5));
 
 	return ret;
 }
@@ -159,37 +157,41 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(assets, launch_pos.x+3, launch_pos.y+7, &kikerRect);
 	App->renderer->Blit(assets, 437, 832, &kikerInvisble);
 	
+	/// ------ Pala------------
+	p2List_item<PhysBody*>* c = App->physics->flippersL.getFirst();
+	SDL_Rect rect = { 1899,12,73,39 };
+	while (c != NULL)
+	{
+		int x, y;
+		c->data->GetPosition(x, y);
+		App->renderer->Blit(assets, x - 39, y - 25, &rect, 1.0f, c->data->GetRotation() - (RADTODEG * 0.50));
+		c = c->next;
+	}
+	c = App->physics->flippersR.getFirst();
+	rect = { 2067,12,73,39 };
+	while (c != NULL)
+	{
+		int x, y;
+		c->data->GetPosition(x, y);
+		App->renderer->Blit(assets, x - 39, y - 22, &rect, 1.0f, c->data->GetRotation() + (RADTODEG * 0.50));
+		c = c->next;
+	}
+	// Rampa -------------------------------------------//////
+	rect = { 12,87,84,312 };
+	App->renderer->Blit(assets, 141, 50, &rect);
+
 	// Circle  -----------------------------------------//////
-	p2List_item<PhysBody*>* c = circles.getFirst();
-	SDL_Rect rect = {1723,18,27,27};
+	c = circles.getFirst();
+	rect = { 1723,18,27,27 };
 	while(c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
-		//if(c->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
 		App->renderer->Blit(assets, x, y, &rect, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
 
-	/// ------ Pala------------
-	 c= App->physics->flippersL.getFirst();
-	 rect = {1899,12,73,39};
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(assets, x-39, y-25, &rect, 1.0f, c->data->GetRotation()- (RADTODEG*0.50));
-		c = c->next;
-	}
-	 c= App->physics->flippersR.getFirst();
-	 rect = { 2067,12,73,39};
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(assets, x-39, y-22, &rect, 1.0f, c->data->GetRotation()+ (RADTODEG*0.50));
-		c = c->next;
-	}
+	
 
 	// ray -----------------
 	if(ray_on == true)
@@ -221,7 +223,31 @@ update_status ModuleSceneIntro::Update()
 		sensorBlock = App->physics->CreateStaticRectangle(432, 95, 10, 73);
 		FlipperKickerup = false;
 	}
-
+	if (boolRampSensor)
+	{
+		if (App->physics->bouncerBall->body->IsActive())App->physics->bouncerBall->body->SetActive(false);
+		if (App->physics->pieceRed->body->IsActive())App->physics->pieceRed->body->SetActive(false);
+		if (App->physics->corner->body->IsActive())App->physics->corner->body->SetActive(false);
+		if (App->physics->segmentBig->body->IsActive())App->physics->segmentBig->body->SetActive(false);
+		if (App->physics->flippersL.getLast()->data->body->IsActive())App->physics->flippersL.getLast()->data->body->SetActive(false);
+		if (!App->physics->ramp->body->IsActive())App->physics->ramp->body->SetActive(true);
+		boolRampSensor = false;
+		rampDraw = true;
+	}
+	rect = {12,87,84,312};
+	if(!rampDraw)
+		App->renderer->Blit(assets, 141, 50, &rect);
+	if(BoolRampSensorBack)
+	{
+		if (!App->physics->bouncerBall->body->IsActive())App->physics->bouncerBall->body->SetActive(true);
+		if (!App->physics->pieceRed->body->IsActive())App->physics->pieceRed->body->SetActive(true);
+		if (!App->physics->corner->body->IsActive())App->physics->corner->body->SetActive(true);
+		if (!App->physics->segmentBig->body->IsActive())App->physics->segmentBig->body->SetActive(true);
+		if (!App->physics->flippersL.getLast()->data->body->IsActive())App->physics->flippersL.getLast()->data->body->SetActive(true);
+		if (App->physics->ramp->body->IsActive())App->physics->ramp->body->SetActive(false);
+		BoolRampSensorBack = false;
+		rampDraw = false;
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -235,11 +261,29 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		sensed = true;
 	}
 
-	if (bodyA == KickerPathSensor && bodyB == circles.getLast()->data ||
-		bodyB == KickerPathSensor && bodyA == circles.getLast()->data) {
+	if (bodyA == kickerPathSensor && bodyB == circles.getLast()->data ||
+		bodyB == kickerPathSensor && bodyA == circles.getLast()->data) {
 
 		if (FlipperKickerup != true) {
 			FlipperKickerup = true;
+		}
+	}
+	if (bodyA == rampSensor && bodyB == circles.getLast()->data ||
+		bodyB == rampSensor && bodyA == circles.getLast()->data ||
+		bodyA == rampSensor2 && bodyB == circles.getLast()->data ||
+		bodyB == rampSensor2 && bodyA == circles.getLast()->data) {
+
+		if (boolRampSensor != true) {
+			boolRampSensor = true;
+		}
+	}
+	if (bodyA == rampSensorBack && bodyB == circles.getLast()->data ||
+		bodyB == rampSensorBack && bodyA == circles.getLast()->data ||
+		bodyA == rampSensorBack2 && bodyB == circles.getLast()->data ||
+		bodyB == rampSensorBack2 && bodyA == circles.getLast()->data) {
+
+		if (BoolRampSensorBack != true) {
+			BoolRampSensorBack = true;
 		}
 	}
 	/*

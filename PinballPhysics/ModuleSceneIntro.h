@@ -40,11 +40,18 @@ public:
 	SDL_Rect kikerRect;
 	Kicker kiker;
 	//Variables to sensors
-	bool FlipperKickerup = false;
 	PhysBody* sensorBlock;
+	bool FlipperKickerup = false;
+	bool rampDraw = false;
+	bool boolRampSensor = false;
+	bool BoolRampSensorBack = false;
 	//Sensors
 	p2List<PhysBody*> sensorsList;
-	PhysBody* KickerPathSensor;
+	PhysBody* kickerPathSensor;
 	PhysBody* sensor;
+	PhysBody* rampSensor;
+	PhysBody* rampSensor2;
+	PhysBody* rampSensorBack;
+	PhysBody* rampSensorBack2;
 
 };
