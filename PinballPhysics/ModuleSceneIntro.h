@@ -27,7 +27,6 @@ public:
 
 public:
 	p2List<PhysBody*> circles;
-	PhysBody* sensor;
 	bool sensed;
 
 	SDL_Texture* circle;
@@ -40,5 +39,12 @@ public:
 	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;
 	Kicker kiker;
+	//Variables to sensors
+	bool FlipperKickerup = false;
+	PhysBody* sensorBlock;
+	//Sensors
+	p2List<PhysBody*> sensorsList;
+	PhysBody* KickerPathSensor;
+	PhysBody* sensor;
 
 };

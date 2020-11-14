@@ -28,7 +28,7 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	bg = App->textures->Load("pinball/pinball_bg.png");
 	assets = App->textures->Load("pinball/background.png");
-	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT+35, SCREEN_WIDTH, 25);
+	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT+35, SCREEN_WIDTH, 25);
 
 	//Kicker
 	kikerInvisble = {281,202,31,47};
@@ -46,6 +46,9 @@ bool ModuleSceneIntro::Start()
 	App->physics->CreateCircle(118, 254, 15, false, bouncerBallsRestitution);
 	App->physics->CreateCircle(188, 238, 15, false, bouncerBallsRestitution);
 
+	//Sensors
+	sensorsList.add(KickerPathSensor = App->physics->CreateRectangleSensor(420, 90, 5, 85));
+	sensorsList.add(sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 35, SCREEN_WIDTH, 25));
 
 	return ret;
 }
@@ -62,7 +65,6 @@ bool ModuleSceneIntro::CleanUp()
 	LOG("Unloading map");
 
 	// Remove circles
-
 	p2List_item<PhysBody*>* item;
 	item = circles.getFirst();
 
@@ -73,9 +75,20 @@ bool ModuleSceneIntro::CleanUp()
 		item = item->next;
 
 	}
-
 	circles.clear();
 	LOG("Unloading circles");
+
+	p2List_item<PhysBody*>* item3;
+	item3 = sensorsList.getFirst();
+	while (item3 != NULL)
+	{
+		RELEASE(item3->data);
+		item3 = item3->next;
+
+	}
+	sensorsList.clear();
+	LOG("Unloading sensors");
+
 }
 
 // Update: draw background
@@ -94,8 +107,7 @@ update_status ModuleSceneIntro::Update()
 
 		//App->audio->PlayFx();
 	}
-
-
+		
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		ray_on = !ray_on;
@@ -108,8 +120,7 @@ update_status ModuleSceneIntro::Update()
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 12, true));
 		circles.getLast()->data->listener = this;
 	}
-
-
+	
 	// Flipper Torque
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
@@ -147,12 +158,7 @@ update_status ModuleSceneIntro::Update()
 	launch_pos.y -= kiker.body->height;
 	App->renderer->Blit(assets, launch_pos.x+3, launch_pos.y+7, &kikerRect);
 	App->renderer->Blit(assets, 437, 832, &kikerInvisble);
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT)
-	{
-		
-		
-	}
-
+	
 	// Circle  -----------------------------------------//////
 	p2List_item<PhysBody*>* c = circles.getFirst();
 	SDL_Rect rect = {1723,18,27,27};
@@ -165,9 +171,6 @@ update_status ModuleSceneIntro::Update()
 		c = c->next;
 	}
 
-	
-
-	
 	/// ------ Pala------------
 	 c= App->physics->flippersL.getFirst();
 	 rect = {1899,12,73,39};
@@ -200,6 +203,7 @@ update_status ModuleSceneIntro::Update()
 		if(normal.x != 0.0f)
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
+	//Sensors-------------
 
 	/// Delete Ball / Spawn next Ball
 	if (sensed)
@@ -208,9 +212,16 @@ update_status ModuleSceneIntro::Update()
 		circles.del(circles.getLast());
 		circles.add(App->physics->CreateCircle(450, 720, 12, true));
 		circles.getLast()->data->listener = this;
-
+		if(sensorBlock->body->IsActive()==true)sensorBlock->body->SetActive(false);
 		sensed = false;
 	}
+	///Block input to kicker
+	if (FlipperKickerup)
+	{
+		sensorBlock = App->physics->CreateStaticRectangle(432, 95, 10, 73);
+		FlipperKickerup = false;
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -218,13 +229,19 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
 	
-		if (bodyA == sensor  ||	bodyB == sensor ) {
+	if (bodyA == sensor  ||	bodyB == sensor ) {
 
-			App->audio->PlayFx(bonus_fx);
-			sensed = true;
+		App->audio->PlayFx(bonus_fx);
+		sensed = true;
+	}
 
+	if (bodyA == KickerPathSensor && bodyB == circles.getLast()->data ||
+		bodyB == KickerPathSensor && bodyA == circles.getLast()->data) {
+
+		if (FlipperKickerup != true) {
+			FlipperKickerup = true;
 		}
-
+	}
 	/*
 	if(bodyA)
 	{
