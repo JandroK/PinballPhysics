@@ -44,7 +44,11 @@ public:
 	bool FlipperKickerup = false;
 	bool rampDraw = true;
 	bool boolRampSensor = false;
-	bool BoolRampSensorBack = false;
+	bool boolRampSensorBack = false;
+	bool boolRampLeftSensor = false;
+	bool boolRampLeftSensorBack = false;
+	bool boolRampRightSensor = false;
+	bool boolRampRightSensorBack = false;
 	bool bouncerBallDraw = true;
 	bool bouncerBallHit1 = false;
 	bool bouncerBallHit2 = false;
@@ -57,5 +61,13 @@ public:
 	PhysBody* rampSensor2;
 	PhysBody* rampSensorBack;
 	PhysBody* rampSensorBack2;
+	PhysBody* rampLeftSensor;
+	PhysBody* rampLeftSensor2;
+	PhysBody* rampLeftSensorBack;
+	PhysBody* rampLeftSensorBack2;
+	PhysBody* rampRightSensor;
+	PhysBody* rampRightSensor2;
+	PhysBody* rampRightSensorBack;
+	PhysBody* rampRightSensorBack2;
 
 };

@@ -41,13 +41,23 @@ bool ModuleSceneIntro::Start()
 	circles.add(App->physics->CreateCircle(450, 730, 12, true));
 	circles.getLast()->data->listener = this;
 
-	//Sensors
+	//Sensors upstairs
 	sensorsList.add(sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 35, SCREEN_WIDTH, 25));
 	sensorsList.add(kickerPathSensor = App->physics->CreateRectangleSensor(420, 90, 5, 85));
 	sensorsList.add(rampSensor = App->physics->CreateRectangleSensor(192, 370, 5, 5));
 	sensorsList.add(rampSensor2 = App->physics->CreateRectangleSensor(270, 74, 5, 5));
 	sensorsList.add(rampSensorBack = App->physics->CreateRectangleSensor(192, 405, 5, 5));
 	sensorsList.add(rampSensorBack2 = App->physics->CreateRectangleSensor(305, 74, 5, 5));
+	//Sensors downstairs Left
+	sensorsList.add(rampLeftSensor = App->physics->CreateRectangleSensor(67, 457, 5, 5));
+	sensorsList.add(rampLeftSensor2 = App->physics->CreateRectangleSensor(70, 630, 5, 5));
+	sensorsList.add(rampLeftSensorBack = App->physics->CreateRectangleSensor(72, 496, 5, 5));
+	sensorsList.add(rampLeftSensorBack2 = App->physics->CreateRectangleSensor(70, 665, 5, 5));
+	//Sensors downstairs Right
+	sensorsList.add(rampRightSensor = App->physics->CreateRectangleSensor(380, 427, 5, 5));
+	sensorsList.add(rampRightSensor2 = App->physics->CreateRectangleSensor(370, 647, 5, 5));
+	sensorsList.add(rampRightSensorBack = App->physics->CreateRectangleSensor(376, 465, 5, 5));
+	sensorsList.add(rampRightSensorBack2 = App->physics->CreateRectangleSensor(368, 678, 5, 5));
 
 	return ret;
 }
@@ -228,7 +238,9 @@ update_status ModuleSceneIntro::Update()
 	}
 	if(FlipperKickerup)//Active collison of block input in the kicker
 		sensorBlock->body->SetActive(true);
-	//Active Desactive Collisions
+	//Active Desactive Collisions----------------------------------
+
+	//Sensors upstairs
 	if (boolRampSensor)
 	{
 		App->physics->bouncerBall3->body->SetActive(false);
@@ -240,7 +252,7 @@ update_status ModuleSceneIntro::Update()
 		boolRampSensor = false;
 		bouncerBallDraw = false;
 	}
-	if (BoolRampSensorBack)
+	if (boolRampSensorBack)
 	{
 		App->physics->bouncerBall3->body->SetActive(true);
 		App->physics->pieceRed->body->SetActive(true);
@@ -248,9 +260,38 @@ update_status ModuleSceneIntro::Update()
 		App->physics->segmentBig->body->SetActive(true);
 		if (!App->physics->flippersL.getLast()->data->body->IsActive())App->physics->flippersL.getLast()->data->body->SetActive(true);
 		if (App->physics->ramp->body->IsActive())App->physics->ramp->body->SetActive(false);
-		BoolRampSensorBack = false;
+		boolRampSensorBack = false;
 		rampDraw = true;
 		bouncerBallDraw = true;
+	}
+	//Sensors downstairs
+	//Sensors Left
+	if (boolRampLeftSensor)
+	{
+		App->physics->wayLeftLine1->body->SetActive(false);
+		App->physics->wayLeftLine2->body->SetActive(false);
+		App->physics->wayLeftChain->body->SetActive(true);
+		boolRampLeftSensor = false;
+	}
+	if (boolRampLeftSensorBack)
+	{
+		App->physics->wayLeftLine1->body->SetActive(true);
+		App->physics->wayLeftLine2->body->SetActive(true);
+		App->physics->wayLeftChain->body->SetActive(false);
+		boolRampLeftSensorBack = false;
+	}
+	//Sensors Right
+	if (boolRampRightSensor)
+	{
+		App->physics->wayRightLine->body->SetActive(false);
+		App->physics->wayRightChain->body->SetActive(true);
+		boolRampRightSensor = false;
+	}
+	if (boolRampRightSensorBack)
+	{
+		App->physics->wayRightLine->body->SetActive(true);
+		App->physics->wayRightChain->body->SetActive(false);
+		boolRampRightSensorBack = false;
 	}
 	//Hit of Bouncer Balls
 	rect = { 1832,12,56,53 };
@@ -284,13 +325,13 @@ update_status ModuleSceneIntro::Update()
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
-	
+	//Sensor Respawn Ball
 	if (bodyA == sensor  ||	bodyB == sensor ) {
 
 		App->audio->PlayFx(bonus_fx);
 		sensed = true;
 	}
-
+	//Sensor input kicker block
 	if (bodyA == kickerPathSensor && bodyB == circles.getLast()->data ||
 		bodyB == kickerPathSensor && bodyA == circles.getLast()->data) {
 
@@ -298,6 +339,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			FlipperKickerup = true;
 		}
 	}
+	//Sensors of ramp upstairs
 	if (bodyA == rampSensor && bodyB == circles.getLast()->data ||
 		bodyB == rampSensor && bodyA == circles.getLast()->data ||
 		bodyA == rampSensor2 && bodyB == circles.getLast()->data ||
@@ -312,10 +354,50 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		bodyA == rampSensorBack2 && bodyB == circles.getLast()->data ||
 		bodyB == rampSensorBack2 && bodyA == circles.getLast()->data) {
 
-		if (BoolRampSensorBack != true) {
-			BoolRampSensorBack = true;
+		if (boolRampSensorBack != true) {
+			boolRampSensorBack = true;
 		}
 	}
+	//Sensors of ramp downstairs
+	//Sensors Ramp Left
+	if (bodyA == rampLeftSensor && bodyB == circles.getLast()->data ||
+		bodyB == rampLeftSensor && bodyA == circles.getLast()->data ||
+		bodyA == rampLeftSensor2 && bodyB == circles.getLast()->data ||
+		bodyB == rampLeftSensor2 && bodyA == circles.getLast()->data) {
+
+		if (boolRampLeftSensor != true) {
+			boolRampLeftSensor = true;
+		}
+	}
+	if (bodyA == rampLeftSensorBack && bodyB == circles.getLast()->data ||
+		bodyB == rampLeftSensorBack && bodyA == circles.getLast()->data ||
+		bodyA == rampLeftSensorBack2 && bodyB == circles.getLast()->data ||
+		bodyB == rampLeftSensorBack2 && bodyA == circles.getLast()->data) {
+
+		if (boolRampLeftSensorBack != true) {
+			boolRampLeftSensorBack = true;
+		}
+	}
+	//Sensors Ramp Right
+	if (bodyA == rampRightSensor && bodyB == circles.getLast()->data ||
+		bodyB == rampRightSensor && bodyA == circles.getLast()->data ||
+		bodyA == rampRightSensor2 && bodyB == circles.getLast()->data ||
+		bodyB == rampRightSensor2 && bodyA == circles.getLast()->data) {
+
+		if (boolRampRightSensor != true) {
+			boolRampRightSensor = true;
+		}
+	}
+	if (bodyA == rampRightSensorBack && bodyB == circles.getLast()->data ||
+		bodyB == rampRightSensorBack && bodyA == circles.getLast()->data ||
+		bodyA == rampRightSensorBack2 && bodyB == circles.getLast()->data ||
+		bodyB == rampRightSensorBack2 && bodyA == circles.getLast()->data) {
+
+		if (boolRampRightSensorBack != true) {
+			boolRampRightSensorBack = true;
+		}
+	}
+	//Sensors Bouncers Balls
 	if (bodyA == App->physics->bouncerBall1 && bodyB == circles.getLast()->data ||
 		bodyB == App->physics->bouncerBall1 && bodyA == circles.getLast()->data) {
 		if (bouncerBallHit1 != true) {

@@ -37,7 +37,7 @@ bool ModulePhysics::Start()
 	b2BodyDef bd;
 	ground = world->CreateBody(&bd);
 
-	// outline of map
+	// Outline of map
 	int pinball_background[140] = {
 		148,11,
 		108,23,
@@ -82,7 +82,7 @@ bool ModulePhysics::Start()
 		422,695,
 		414,684,
 		381,684,
-		383,647,
+		381,647,
 		423,607,
 		423,575,
 		379,526,
@@ -228,6 +228,82 @@ bool ModulePhysics::Start()
 	};
 	ramp=CreateChain(0, 0, rampVertex, 28);
 	ramp->body->SetActive(false);
+	//Sensors ramp left
+	int wayLeftLineCollision1[8] = {
+		67,426,
+		108,522,
+		108,521,
+		67,425,
+	};
+	wayLeftLine1 = CreateChain(0, 0, wayLeftLineCollision1, 8);
+	int wayLeftLineCollision2[8] = {
+		73,542,
+		55,520,
+		55,521,
+		73,543
+	};
+	wayLeftLine2 = CreateChain(0, 0, wayLeftLineCollision2, 8);
+	int wayLeftChainCollision[48] = {
+		88,485,
+		81,471,
+		81,453,
+		93,447,
+		104,453,
+		104,471,
+		55,520,
+		28,557,
+		28,594,
+		54,624,
+		54,676,
+		84,670,
+		84,618,
+		56,581,
+		56,566,
+		73,542,
+		135,480,
+		135,452,
+		125,435,
+		105,422,
+		82,422,
+		60,433,
+		48,452,
+		55,520
+	};
+	wayLeftChain = CreateChain(0, 0, wayLeftChainCollision, 48);
+	wayLeftChain->body->SetActive(false);
+	//Sensors ramp right
+	int wayRightLineCollision[8] = {
+		321,423,
+		325,518,
+		326,518,
+		366,426,
+	};
+	wayRightLine = CreateChain(0, 0, wayRightLineCollision, 8);
+	int wayRightChainCollision[42] = {
+		379,526,
+		358,505,
+		358,422,
+		363,423,
+		363,498,
+		379,517,
+		395,452,
+		397,404,
+		385,389,
+		351,389,
+		330,413,
+		330,515,
+		393,581,
+		393,600,
+		362,627,
+		350,652,
+		350,685,
+		381,684,
+		381,647,
+		423,607,
+		423,575,
+	};
+	wayRightChain = CreateChain(0, 0, wayRightChainCollision, 42);
+	wayRightChain->body->SetActive(false);
 	// Bouncer bols
 	float bouncerBallsRestitution = 2;
 	bouncerBall1 = CreateCircle(138, 189, 15, false, bouncerBallsRestitution);

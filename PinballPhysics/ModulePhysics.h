@@ -87,6 +87,11 @@ public:
 	PhysBody* corner;
 	PhysBody* segmentBig;
 	PhysBody* ramp;
+	PhysBody* wayLeftLine1;
+	PhysBody* wayLeftLine2;
+	PhysBody* wayLeftChain;
+	PhysBody* wayRightLine;
+	PhysBody* wayRightChain;
 	p2List<PhysBody*> flippersL;
 	p2List<PhysBody*> flippersR;
 	p2List<PhysBody*> circlesToDelete;
