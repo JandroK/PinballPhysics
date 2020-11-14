@@ -37,6 +37,7 @@ public:
 	p2Point<int> ray;
 	bool ray_on;
 
+	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;
 	Kicker kiker;
 

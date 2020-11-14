@@ -30,8 +30,9 @@ bool ModuleSceneIntro::Start()
 	assets = App->textures->Load("pinball/background.png");
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT+35, SCREEN_WIDTH, 25);
 
-	//Kicker	
-	kikerRect = { 0,0,27,27 };
+	//Kicker
+	kikerInvisble = {281,202,31,47};
+	kikerRect = { 281,87,31,96 };
 	kiker.anchor = App->physics->CreateStaticRectangle(455, 820, 5, 5);
 	kiker.body = App->physics->CreateRectangle(455, 750, 20, 10);
 	kiker.joint = App->physics->CreatePrismaticJoint(kiker.anchor, kiker.body, 1, -80, -20, 50);
@@ -80,12 +81,7 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	iPoint launch_pos;
-	kiker.body->GetPosition(launch_pos.x, launch_pos.y);
-	launch_pos.x -= kiker.body->width;
-	launch_pos.y -= kiker.body->height;
-	App->renderer->Blit(assets, launch_pos.x , launch_pos.y , &kikerRect);
-
+	App->renderer->Blit(bg, 0, 0);
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
 
 		kiker.joint->SetMotorSpeed(3);
@@ -145,7 +141,12 @@ update_status ModuleSceneIntro::Update()
 	fVector normal(0.0f, 0.0f);
 
 	// All draw functions ------------------------------------------------------
-	App->renderer->Blit(bg, 0, 0);
+	iPoint launch_pos;
+	kiker.body->GetPosition(launch_pos.x, launch_pos.y);
+	launch_pos.x -= kiker.body->width;
+	launch_pos.y -= kiker.body->height;
+	App->renderer->Blit(assets, launch_pos.x+3, launch_pos.y+7, &kikerRect);
+	App->renderer->Blit(assets, 437, 832, &kikerInvisble);
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT)
 	{
 		
