@@ -36,7 +36,8 @@ bool ModuleSceneIntro::Start()
 	kiker.anchor = App->physics->CreateStaticRectangle(455, 820, 5, 5);
 	kiker.body = App->physics->CreateRectangle(455, 750, 20, 10);
 	kiker.joint = App->physics->CreatePrismaticJoint(kiker.anchor, kiker.body, 1, -80, -20, 50);
-
+	sensorBlock = App->physics->CreateStaticRectangle(435, 97, 12, 69);
+	sensorBlock->body->SetActive(false);
 	circles.add(App->physics->CreateCircle(450, 730, 12, true));
 	circles.getLast()->data->listener = this;
 
@@ -177,12 +178,12 @@ update_status ModuleSceneIntro::Update()
 		c = c->next;
 	}
 	// Rampa -------------------------------------------//////
-	rect = { 12,87,84,312 };
+	rect = {12,87,84,312};
 	App->renderer->Blit(assets, 141, 50, &rect);
 
 	// Circle  -----------------------------------------//////
 	c = circles.getFirst();
-	rect = { 1723,18,27,27 };
+	rect = {1723,18,27,27};
 	while(c != NULL)
 	{
 		int x, y;
@@ -190,8 +191,15 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(assets, x, y, &rect, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
+	//Bouncer bols--------------------------------------/////
+	if (bouncerBallDraw)
+	{
+		rect = {1764,12,56,53};
+		App->renderer->Blit(assets, 110, 162, &rect);
+		App->renderer->Blit(assets, 90, 227, &rect);
+		App->renderer->Blit(assets, 157, 210, &rect);
 
-	
+	}
 
 	// ray -----------------
 	if(ray_on == true)
@@ -214,40 +222,62 @@ update_status ModuleSceneIntro::Update()
 		circles.del(circles.getLast());
 		circles.add(App->physics->CreateCircle(450, 720, 12, true));
 		circles.getLast()->data->listener = this;
-		if(sensorBlock->body->IsActive()==true)sensorBlock->body->SetActive(false);
+		sensorBlock->body->SetActive(false); ///Block input to kicker
 		sensed = false;
-	}
-	///Block input to kicker
-	if (FlipperKickerup)
-	{
-		sensorBlock = App->physics->CreateStaticRectangle(432, 95, 10, 73);
 		FlipperKickerup = false;
 	}
+	if(FlipperKickerup)//Active collison of block input in the kicker
+		sensorBlock->body->SetActive(true);
+	//Active Desactive Collisions
 	if (boolRampSensor)
 	{
-		if (App->physics->bouncerBall->body->IsActive())App->physics->bouncerBall->body->SetActive(false);
-		if (App->physics->pieceRed->body->IsActive())App->physics->pieceRed->body->SetActive(false);
-		if (App->physics->corner->body->IsActive())App->physics->corner->body->SetActive(false);
-		if (App->physics->segmentBig->body->IsActive())App->physics->segmentBig->body->SetActive(false);
+		App->physics->bouncerBall3->body->SetActive(false);
+		App->physics->pieceRed->body->SetActive(false);
+		App->physics->corner->body->SetActive(false);
+		App->physics->segmentBig->body->SetActive(false);
 		if (App->physics->flippersL.getLast()->data->body->IsActive())App->physics->flippersL.getLast()->data->body->SetActive(false);
 		if (!App->physics->ramp->body->IsActive())App->physics->ramp->body->SetActive(true);
 		boolRampSensor = false;
-		rampDraw = true;
+		bouncerBallDraw = false;
 	}
-	rect = {12,87,84,312};
-	if(!rampDraw)
-		App->renderer->Blit(assets, 141, 50, &rect);
-	if(BoolRampSensorBack)
+	if (BoolRampSensorBack)
 	{
-		if (!App->physics->bouncerBall->body->IsActive())App->physics->bouncerBall->body->SetActive(true);
-		if (!App->physics->pieceRed->body->IsActive())App->physics->pieceRed->body->SetActive(true);
-		if (!App->physics->corner->body->IsActive())App->physics->corner->body->SetActive(true);
-		if (!App->physics->segmentBig->body->IsActive())App->physics->segmentBig->body->SetActive(true);
+		App->physics->bouncerBall3->body->SetActive(true);
+		App->physics->pieceRed->body->SetActive(true);
+		App->physics->corner->body->SetActive(true);
+		App->physics->segmentBig->body->SetActive(true);
 		if (!App->physics->flippersL.getLast()->data->body->IsActive())App->physics->flippersL.getLast()->data->body->SetActive(true);
 		if (App->physics->ramp->body->IsActive())App->physics->ramp->body->SetActive(false);
 		BoolRampSensorBack = false;
-		rampDraw = false;
+		rampDraw = true;
+		bouncerBallDraw = true;
 	}
+	//Hit of Bouncer Balls
+	rect = { 1832,12,56,53 };
+	if (bouncerBallHit1)
+	{
+		App->renderer->Blit(assets, 110, 162, &rect);
+		bouncerBallHit1 = false;
+	}
+	if (bouncerBallHit2)
+	{
+		App->renderer->Blit(assets, 90, 227, &rect);
+		bouncerBallHit2 = false;
+	}
+	if (bouncerBallHit3)
+	{
+		App->renderer->Blit(assets, 157, 210, &rect);
+		bouncerBallHit3 = false;
+	}
+	//Draw Ramp
+	if (rampDraw)
+	{
+		rect = { 12,87,84,312 };
+		App->renderer->Blit(assets, 141, 50, &rect);
+	}
+	if (!bouncerBallDraw)rampDraw = false;//depende de bouncerBallDraw porque queremos primero dejar de pintar las bolas que la rampa
+	
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -286,6 +316,28 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			BoolRampSensorBack = true;
 		}
 	}
+	if (bodyA == App->physics->bouncerBall1 && bodyB == circles.getLast()->data ||
+		bodyB == App->physics->bouncerBall1 && bodyA == circles.getLast()->data) {
+		if (bouncerBallHit1 != true) {
+			bouncerBallHit1 = true;
+		}
+		//+Score
+	}
+	if (bodyA == App->physics->bouncerBall2 && bodyB == circles.getLast()->data ||
+		bodyB == App->physics->bouncerBall2 && bodyA == circles.getLast()->data) {
+		if (bouncerBallHit2 != true) {
+			bouncerBallHit2 = true;
+		}
+		//+Score
+	}
+	if (bodyA == App->physics->bouncerBall3 && bodyB == circles.getLast()->data ||
+		bodyB == App->physics->bouncerBall3 && bodyA == circles.getLast()->data) {
+		if (bouncerBallHit3 != true) {
+			bouncerBallHit3 = true;
+		}
+		//+Score
+	}
+	
 	/*
 	if(bodyA)
 	{

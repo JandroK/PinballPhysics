@@ -80,7 +80,9 @@ private:
 	p2List<b2Body*> pivotJoins;
 
 public:
-	PhysBody* bouncerBall;
+	PhysBody* bouncerBall1;
+	PhysBody* bouncerBall2;
+	PhysBody* bouncerBall3;
 	PhysBody* pieceRed;
 	PhysBody* corner;
 	PhysBody* segmentBig;

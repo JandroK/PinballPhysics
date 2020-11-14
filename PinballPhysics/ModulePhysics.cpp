@@ -230,9 +230,9 @@ bool ModulePhysics::Start()
 	ramp->body->SetActive(false);
 	// Bouncer bols
 	float bouncerBallsRestitution = 2;
-	CreateCircle(138, 189, 15, false, bouncerBallsRestitution);
-	CreateCircle(118, 254, 15, false, bouncerBallsRestitution);
-	bouncerBall = CreateCircle(188, 238, 15, false, bouncerBallsRestitution);
+	bouncerBall1 = CreateCircle(138, 189, 15, false, bouncerBallsRestitution);
+	bouncerBall2 = CreateCircle(118, 254, 15, false, bouncerBallsRestitution);
+	bouncerBall3 = CreateCircle(188, 238, 15, false, bouncerBallsRestitution);
 
 	//CreateFlipperL(154, 837);
 	//CreateFlipperR(100, 100);

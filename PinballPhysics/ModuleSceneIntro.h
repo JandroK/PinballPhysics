@@ -42,9 +42,13 @@ public:
 	//Variables to sensors
 	PhysBody* sensorBlock;
 	bool FlipperKickerup = false;
-	bool rampDraw = false;
+	bool rampDraw = true;
 	bool boolRampSensor = false;
 	bool BoolRampSensorBack = false;
+	bool bouncerBallDraw = true;
+	bool bouncerBallHit1 = false;
+	bool bouncerBallHit2 = false;
+	bool bouncerBallHit3 = false;
 	//Sensors
 	p2List<PhysBody*> sensorsList;
 	PhysBody* kickerPathSensor;
