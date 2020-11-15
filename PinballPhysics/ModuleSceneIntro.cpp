@@ -238,6 +238,10 @@ update_status ModuleSceneIntro::Update()
 	}
 	if(FlipperKickerup)//Active collison of block input in the kicker
 		sensorBlock->body->SetActive(true);
+	//Timer
+	timerBouncerBallHit1->update();
+	timerBouncerBallHit2->update();
+	timerBouncerBallHit3->update();
 	//Active Desactive Collisions----------------------------------
 
 	//Sensors upstairs
@@ -272,6 +276,7 @@ update_status ModuleSceneIntro::Update()
 		App->physics->wayLeftLine2->body->SetActive(false);
 		App->physics->wayLeftChain->body->SetActive(true);
 		boolRampLeftSensor = false;
+		rampLeftDraw = false;
 	}
 	if (boolRampLeftSensorBack)
 	{
@@ -279,6 +284,7 @@ update_status ModuleSceneIntro::Update()
 		App->physics->wayLeftLine2->body->SetActive(true);
 		App->physics->wayLeftChain->body->SetActive(false);
 		boolRampLeftSensorBack = false;
+		rampLeftDraw = true;
 	}
 	//Sensors Right
 	if (boolRampRightSensor)
@@ -286,29 +292,31 @@ update_status ModuleSceneIntro::Update()
 		App->physics->wayRightLine->body->SetActive(false);
 		App->physics->wayRightChain->body->SetActive(true);
 		boolRampRightSensor = false;
+		rampRightDraw = false;
 	}
 	if (boolRampRightSensorBack)
 	{
 		App->physics->wayRightLine->body->SetActive(true);
 		App->physics->wayRightChain->body->SetActive(false);
 		boolRampRightSensorBack = false;
+		rampRightDraw = true;
 	}
 	//Hit of Bouncer Balls
 	rect = { 1832,12,56,53 };
 	if (bouncerBallHit1)
 	{
 		App->renderer->Blit(assets, 110, 162, &rect);
-		bouncerBallHit1 = false;
+		if(timerBouncerBallHit1->check())bouncerBallHit1 = false;
 	}
 	if (bouncerBallHit2)
 	{
 		App->renderer->Blit(assets, 90, 227, &rect);
-		bouncerBallHit2 = false;
+		if (timerBouncerBallHit2->check())bouncerBallHit2 = false;
 	}
 	if (bouncerBallHit3)
 	{
 		App->renderer->Blit(assets, 157, 210, &rect);
-		bouncerBallHit3 = false;
+		if (timerBouncerBallHit3->check())bouncerBallHit3 = false;
 	}
 	//Draw Ramp
 	if (rampDraw)
@@ -317,8 +325,16 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(assets, 141, 50, &rect);
 	}
 	if (!bouncerBallDraw)rampDraw = false;//depende de bouncerBallDraw porque queremos primero dejar de pintar las bolas que la rampa
-	
-	
+	if (rampLeftDraw)
+	{
+		rect = { 107,87,89,140 };
+		App->renderer->Blit(assets, 54, 414, &rect);
+	}
+	if (rampRightDraw)
+	{
+		rect = { 208,87,61,115 };
+		App->renderer->Blit(assets, 326, 451, &rect);
+	}
 	return UPDATE_CONTINUE;
 }
 

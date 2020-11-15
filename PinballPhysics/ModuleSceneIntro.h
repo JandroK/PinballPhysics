@@ -3,7 +3,7 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "Globals.h"
-
+#include "Timer.h"
 class PhysBody;
 struct b2PrismaticJoint;
 
@@ -39,10 +39,18 @@ public:
 	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;
 	Kicker kiker;
+
+	//Timer
+	Timer* timerBouncerBallHit1= new Timer(600);
+	Timer* timerBouncerBallHit2= new Timer(600);
+	Timer* timerBouncerBallHit3= new Timer(600);
+
 	//Variables to sensors
 	PhysBody* sensorBlock;
 	bool FlipperKickerup = false;
 	bool rampDraw = true;
+	bool rampLeftDraw = true;
+	bool rampRightDraw = true;
 	bool boolRampSensor = false;
 	bool boolRampSensorBack = false;
 	bool boolRampLeftSensor = false;
@@ -53,6 +61,7 @@ public:
 	bool bouncerBallHit1 = false;
 	bool bouncerBallHit2 = false;
 	bool bouncerBallHit3 = false;
+
 	//Sensors
 	p2List<PhysBody*> sensorsList;
 	PhysBody* kickerPathSensor;
