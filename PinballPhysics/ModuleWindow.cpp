@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "SDL_image/include/SDL_image.h"
 
 ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -63,6 +64,8 @@ bool ModuleWindow::Init()
 			//Get window surface
 			screen_surface = SDL_GetWindowSurface(window);
 		}
+		icon = IMG_Load("pinball/iconoPainball.png");
+		SDL_SetWindowIcon(window, icon);
 	}
 
 	return ret;
