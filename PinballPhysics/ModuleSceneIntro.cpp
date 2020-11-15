@@ -417,7 +417,7 @@ update_status ModuleSceneIntro::Update()
 			gameOverFxPlay = false;
 		}
 	}
-	if (score % 100000 == 0 && score != 0)lives++, score += 100;//cada 100000 puntos consigues una vida extra
+	if (score % 10000 == 0 && score != 0)lives++, score += 100;//cada 100000 puntos consigues una vida extra
 	DrawScore();
 	
 	return UPDATE_CONTINUE;
