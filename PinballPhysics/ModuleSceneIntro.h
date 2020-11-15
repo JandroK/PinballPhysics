@@ -50,8 +50,14 @@ public:
 	SDL_Texture* bg;
 	SDL_Texture* assets;
 	SDL_Texture* gameOver;
+
 	uint bonus_fx;
+	uint kikerFx;
 	uint triangleBounceFx;
+	uint lifeLostFx;
+	uint gameOverFx;
+	uint greatFx;
+
 	p2Point<int> ray;
 	bool ray_on;
 	bool scoreBonus = false;
