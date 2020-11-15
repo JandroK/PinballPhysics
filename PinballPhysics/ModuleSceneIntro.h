@@ -3,8 +3,10 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "Globals.h"
+
 #include "Timer.h"
 #include "Animation.h"
+
 
 class PhysBody;
 struct b2PrismaticJoint;
@@ -21,6 +23,8 @@ struct Kicker {
 	b2PrismaticJoint* joint;
 };
 
+
+
 class ModuleSceneIntro : public Module
 {
 public:
@@ -29,8 +33,10 @@ public:
 
 	bool Start();
 	update_status Update();
+	void DrawScore();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+
 
 public:
 	p2List<PhysBody*> circles;
@@ -43,9 +49,11 @@ public:
 	SDL_Texture* bg;
 	SDL_Texture* assets;
 	uint bonus_fx;
+	uint triangleBounceFx;
 	p2Point<int> ray;
 	bool ray_on;
 
+	SDL_Rect scoreRect;
 	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;
 	Kicker kiker;
@@ -88,5 +96,8 @@ public:
 	PhysBody* rampRightSensor2;
 	PhysBody* rampRightSensorBack;
 	PhysBody* rampRightSensorBack2;
+
+
+	int score;
 
 };
