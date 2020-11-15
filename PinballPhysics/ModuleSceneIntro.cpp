@@ -477,13 +477,13 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA->type == TypePhysbody::BOUNCER || bodyB->type == TypePhysbody::BOUNCER)
 		{
 			App->audio->PlayFx(bonus_fx);
-			score += 10;
+			if(score<=1000000)score += 10;
 		}
 	if (bodyA != nullptr && bodyB != nullptr)
 		if (bodyA->type == TypePhysbody::BOUNCER_BALL || bodyB->type == TypePhysbody::BOUNCER_BALL)
 		{
 			App->audio->PlayFx(bonus_fx);
-			score += 10;
+			if (score <= 1000000)score += 10;
 		}
 	//Sensors Ramp Right
 	if (bodyA == rampRightSensor && bodyB == circles.getLast()->data ||
