@@ -409,8 +409,14 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(gameOver, 0, 0);
 		if (App->input->GetKey(SDL_SCANCODE_KP_ENTER) == KEY_DOWN
 			|| App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN
-			|| App->input->GetKey(SDL_SCANCODE_RETURN2) == KEY_DOWN)lives = 5, score = 0;
+			|| App->input->GetKey(SDL_SCANCODE_RETURN2) == KEY_DOWN)
+		{
+			lives = 5;
+			score = 0;
+			App->audio->PlayMusic("pinball/sounds/music.wav");
+		}
 	}
+	if (score % 100000 == 0 && score != 0)lives++, score += 100;//cada 100000 puntos consigues una vida extra
 	DrawScore();
 	
 	return UPDATE_CONTINUE;
