@@ -238,7 +238,7 @@ update_status ModuleSceneIntro::Update()
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
-		App->renderer->Blit(assets, x, y, &rect, 1.0f, c->data->GetRotation());
+		App->renderer->Blit(assets, x, y, &rect, 1.0f);
 		c = c->next;
 	}
 	//Bouncer bols--------------------------------------/////
