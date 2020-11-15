@@ -52,7 +52,7 @@ bool ModuleSceneIntro::Start()
 
 
 	//Kicker
-	kikerInvisble = {281,202,31,47};
+	kikerInvisble = {281,202,33,47};
 	kikerRect = { 281,87,31,96 };
 	kiker.anchor = App->physics->CreateStaticRectangle(455, 820, 5, 5);
 	kiker.body = App->physics->CreateRectangle(455, 750, 20, 10);
