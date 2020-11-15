@@ -468,7 +468,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	if (bodyA == rampBigSensor && bodyB == circles.getLast()->data ||
 		bodyB == rampBigSensor && bodyA == circles.getLast()->data){
 		if (score < scoreMax && !firstTime) {
-			score += 1100; 			App->audio->PlayFx(bonus_fx);
+			score += 1100; 			
+			App->audio->PlayFx(bonus_fx);
 		}
 		firstTime = false;
 	}
