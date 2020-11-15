@@ -62,7 +62,7 @@ public:
 	bool ray_on;
 	bool scoreBonus = false;
 	int checkNeon = 0;
-	int lives = 5;
+	int lives = 3;
 	SDL_Rect scoreRect;
 	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;

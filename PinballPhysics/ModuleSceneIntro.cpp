@@ -411,7 +411,7 @@ update_status ModuleSceneIntro::Update()
 			|| App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN
 			|| App->input->GetKey(SDL_SCANCODE_RETURN2) == KEY_DOWN)
 		{
-			lives = 5;
+			lives = 3;
 			score = 0;
 			App->audio->PlayMusic("pinball/sounds/music.wav");
 			gameOverFxPlay = false;
@@ -451,10 +451,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//Sensor Respawn Ball
 	if (bodyA == sensor || bodyB == sensor) {
 
-		App->audio->PlayFx(lifeLostFx);
 		lives--;
 		sensed = true;
 		firstTime = true;
+		if(lives>0)App->audio->PlayFx(lifeLostFx);
 	}
 	//Sensor input kicker block
 	if (bodyA == kickerPathSensor && bodyB == circles.getLast()->data ||
