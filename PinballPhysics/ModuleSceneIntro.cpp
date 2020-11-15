@@ -139,13 +139,13 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(bg, 0, 0);
 	if (lives != 0)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
 
 			kiker.joint->SetMotorSpeed(3);
 			kiker.joint->SetMaxMotorForce(3);
 
 		}
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_UP) {
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_UP || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
 			kiker.joint->SetMotorSpeed(-20);
 			kiker.joint->SetMaxMotorForce(900);
 
@@ -160,14 +160,14 @@ update_status ModuleSceneIntro::Update()
 			ray.y = App->input->GetMouseY();
 		}
 
-		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->physics->GetDebug())
 		{
 			circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 12, true));
 			circles.getLast()->data->listener = this;
 		}
 
 		// Flipper Torque
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		{
 			p2List_item<PhysBody*>* data = App->physics->flippersL.getFirst();
 			while (data != NULL)
@@ -177,7 +177,7 @@ update_status ModuleSceneIntro::Update()
 			}
 		}
 
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		{
 			p2List_item<PhysBody*>* data = App->physics->flippersR.getFirst();
 			while (data != NULL)

@@ -57,8 +57,7 @@ public:
 	PhysBody* CreateChain(int x, int y, int* points, int size, float _restitution=0, TypePhysbody type= TypePhysbody::NONE);
 	PhysBody* CreateStaticRectangle(int x, int y, int width, int height, int _restitution=0);
 	b2PrismaticJoint* CreatePrismaticJoint(PhysBody* anchor, PhysBody* body, int max_move, int min_move, int motor_speed, int max_force);
-
-
+	bool GetDebug() { return debug; }
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
@@ -75,7 +74,7 @@ private:
 	//x,y: the position of the left pivot
 	//separation: distance between left and right pivot (minim 200) 
 	void CreatePairFlippers(int x, int y, int separation);
-
+	
 	bool debug;
 	b2World* world;
 	b2MouseJoint* mouse_joint;
