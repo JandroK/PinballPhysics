@@ -59,7 +59,7 @@
     <ClInclude Include="p2Defs.h">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Proyecto1_4HD\Project_7_Handout\Source\ModuleFonts.h">
+    <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ModuleFonts.h">
@@ -101,6 +101,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModuleFontsc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

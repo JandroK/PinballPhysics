@@ -5,8 +5,6 @@
 #include "Globals.h"
 
 
-#include <string>
-
 class PhysBody;
 struct b2PrismaticJoint;
 
@@ -30,8 +28,7 @@ public:
 	void DrawScore();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
-	void WriteLetter(int x, int y, char letra);
-	int WriteWords(int x, int y, std::string frase);
+
 
 public:
 	p2List<PhysBody*> circles;
@@ -49,12 +46,29 @@ public:
 	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;
 	Kicker kiker;
+
+	//Timer
+	Timer* timerBouncerBallHit1= new Timer(600);
+	Timer* timerBouncerBallHit2= new Timer(600);
+	Timer* timerBouncerBallHit3= new Timer(600);
+
 	//Variables to sensors
 	PhysBody* sensorBlock;
 	bool FlipperKickerup = false;
-	bool rampDraw = false;
+	bool rampDraw = true;
+	bool rampLeftDraw = true;
+	bool rampRightDraw = true;
 	bool boolRampSensor = false;
-	bool BoolRampSensorBack = false;
+	bool boolRampSensorBack = false;
+	bool boolRampLeftSensor = false;
+	bool boolRampLeftSensorBack = false;
+	bool boolRampRightSensor = false;
+	bool boolRampRightSensorBack = false;
+	bool bouncerBallDraw = true;
+	bool bouncerBallHit1 = false;
+	bool bouncerBallHit2 = false;
+	bool bouncerBallHit3 = false;
+
 	//Sensors
 	p2List<PhysBody*> sensorsList;
 	PhysBody* kickerPathSensor;
@@ -63,6 +77,14 @@ public:
 	PhysBody* rampSensor2;
 	PhysBody* rampSensorBack;
 	PhysBody* rampSensorBack2;
+	PhysBody* rampLeftSensor;
+	PhysBody* rampLeftSensor2;
+	PhysBody* rampLeftSensorBack;
+	PhysBody* rampLeftSensorBack2;
+	PhysBody* rampRightSensor;
+	PhysBody* rampRightSensor2;
+	PhysBody* rampRightSensorBack;
+	PhysBody* rampRightSensorBack2;
 
 
 	int score;
