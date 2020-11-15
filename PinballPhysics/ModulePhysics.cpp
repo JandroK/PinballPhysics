@@ -348,7 +348,11 @@ update_status ModulePhysics::PreUpdate()
 PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic, float _restitution)
 {
 	b2BodyDef body;
-	if (dynamic == true)body.type = b2_dynamicBody;
+	if (dynamic == true)
+	{
+		body.type = b2_dynamicBody;
+		body.bullet = true;
+	}
 	else body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
