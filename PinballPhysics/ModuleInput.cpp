@@ -79,10 +79,21 @@ update_status ModuleInput::PreUpdate()
 				mouse_buttons[i] = KEY_IDLE;
 		}
 	}
-
-	if(keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
-		return UPDATE_STOP;
-
+	SDL_Event event;
+	while (SDL_PollEvent(&event) != 0)
+	{
+		if (keys[SDL_SCANCODE_ESCAPE]) {
+			return UPDATE_STOP;
+		}
+		switch (event.type)
+		{
+		case(SDL_QUIT):
+		
+			return UPDATE_STOP;
+			break;
+		
+		}
+	}
 	return UPDATE_CONTINUE;
 }
 
