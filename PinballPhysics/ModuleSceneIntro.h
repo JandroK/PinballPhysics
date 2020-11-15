@@ -61,7 +61,8 @@ public:
 	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;
 	Kicker kiker;
-
+	int scoreMax = 9999999;
+	bool firstTime = true;
 	//Timer
 	Timer* timerBouncerBallHit1= new Timer();
 	Timer* timerBouncerBallHit2= new Timer();
