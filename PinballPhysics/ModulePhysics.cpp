@@ -118,7 +118,7 @@ bool ModulePhysics::Start()
 		151,784,
 		120,768
 	};
-	chains.add(CreateChain(0, 0, triangleLeft, 10,2, TypePhysbody::BOUNCER));
+	CreateChain(0, 0, triangleLeft, 10,2, TypePhysbody::BOUNCER);
 	int triangleRight[10] = {
 		350,720,
 		345,720,
@@ -126,7 +126,7 @@ bool ModulePhysics::Start()
 		322,784,
 		352,773
 	};
-	chains.add(CreateChain(0, 0, triangleRight, 10,2, TypePhysbody::BOUNCER));
+	CreateChain(0, 0, triangleRight, 10,2, TypePhysbody::BOUNCER);
 	int segmentLeft[14] = {
 		73,542,
 		107,635,

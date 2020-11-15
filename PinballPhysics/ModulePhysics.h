@@ -104,6 +104,5 @@ public:
 	p2List<PhysBody*> flippersL;
 	p2List<PhysBody*> flippersR;
 	p2List<PhysBody*> circlesToDelete;
-	p2List<PhysBody*> chains;
 
 };

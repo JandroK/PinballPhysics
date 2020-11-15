@@ -458,24 +458,18 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bouncerBallHit1 != true) {
 			bouncerBallHit1 = true;
 		}
-		//+Score
 	}
 	if (bodyA == App->physics->bouncerBall2 && bodyB == circles.getLast()->data ||
 		bodyB == App->physics->bouncerBall2 && bodyA == circles.getLast()->data) {
 		if (bouncerBallHit2 != true) {
 			bouncerBallHit2 = true;
 		}
-		//+Score
 	}
 	if (bodyA == App->physics->bouncerBall3 && bodyB == circles.getLast()->data ||
 		bodyB == App->physics->bouncerBall3 && bodyA == circles.getLast()->data) {
 		if (bouncerBallHit3 != true) {
 			bouncerBallHit3 = true;
 		}
-		//+Score
 	}
-	
-
-
 }
 
