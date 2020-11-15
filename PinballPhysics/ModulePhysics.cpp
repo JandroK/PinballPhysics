@@ -486,20 +486,6 @@ update_status ModulePhysics::PostUpdate()
 					b2CircleShape* shape = (b2CircleShape*)f->GetShape();
 					b2Vec2 pos = f->GetBody()->GetPosition();
 					App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
-					
-					p2List_item<PhysBody*>* c = circlesToDelete.getFirst();
-					for (c; c; c = c->next)
-					{
-						if (b ==c->data->body )
-						{
-						
-						/*	circlesToDelete.del(c);
-							world->DestroyBody(c->data->body);
-							*///world->DestroyBody(b);
-						}
-
-
-					}
 				}
 				break;
 

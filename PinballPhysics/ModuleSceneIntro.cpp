@@ -157,7 +157,7 @@ update_status ModuleSceneIntro::Update()
 			p2List_item<PhysBody*>* data = App->physics->flippersL.getFirst();
 			while (data != NULL)
 			{
-				data->data->body->ApplyTorque(-400, true);
+				data->data->body->ApplyTorque(-500, true);
 				data = data->next;
 			}
 		}
@@ -167,7 +167,7 @@ update_status ModuleSceneIntro::Update()
 			p2List_item<PhysBody*>* data = App->physics->flippersR.getFirst();
 			while (data != NULL)
 			{
-				data->data->body->ApplyTorque(400, true);
+				data->data->body->ApplyTorque(500, true);
 				data = data->next;
 			}
 		}
@@ -388,7 +388,7 @@ update_status ModuleSceneIntro::Update()
 			|| App->input->GetKey(SDL_SCANCODE_RETURN2) == KEY_DOWN)lives = 5, score = 0;
 	}
 	DrawScore();
-	DrawLives();
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -399,6 +399,9 @@ void ModuleSceneIntro::DrawScore()
 	std::string temp_str = strs.str();
 	char* char_type = (char*)temp_str.c_str();
 	App->renderer->Blit(assets, 0, SCREEN_HEIGHT - 60, &scoreRect);
+	App->renderer->Blit(assets, 347, 897, new SDL_Rect({ 1723,18,27,27 }));
+
+	DrawLives();
 	App->fonts->BlitText( 35,885, 0, char_type);
 }
 void ModuleSceneIntro::DrawLives()
@@ -407,7 +410,7 @@ void ModuleSceneIntro::DrawLives()
 	strsLives << lives;
 	std::string temp_strLives = strsLives.str();
 	char* char_typeLives = (char*)temp_strLives.c_str();
-	App->fonts->BlitText(400, 885, 0, char_typeLives);
+	App->fonts->BlitText(380, 885, 0, char_typeLives);
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)

@@ -103,6 +103,5 @@ public:
 	PhysBody* wayRightChain;
 	p2List<PhysBody*> flippersL;
 	p2List<PhysBody*> flippersR;
-	p2List<PhysBody*> circlesToDelete;
 
 };
