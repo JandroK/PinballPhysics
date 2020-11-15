@@ -55,8 +55,8 @@ bool ModulePhysics::Start()
 		12,684,
 		13,800,
 		53,842,
-		53,914,
-		82,914,
+		53,1014,
+		82,1014,
 		82,835,
 		42,789,
 		42,721,
@@ -65,8 +65,8 @@ bool ModulePhysics::Start()
 		146,822,
 		138,841,
 		168,865,
-		168,913,
-		302,913,
+		168,1013,
+		302,1013,
 		302,867,
 		337,847,
 		326,818,
@@ -75,8 +75,8 @@ bool ModulePhysics::Start()
 		395,720,
 		395,818,
 		372,852,
-		372,912,
-		400,912,
+		372,1012,
+		400,1012,
 		400,859,
 		422,826,
 		422,695,
@@ -118,7 +118,7 @@ bool ModulePhysics::Start()
 		151,784,
 		120,768
 	};
-	CreateChain(0, 0, triangleLeft, 10,2);
+	chains.add(CreateChain(0, 0, triangleLeft, 10,2, TypePhysbody::BOUNCER));
 	int triangleRight[10] = {
 		350,720,
 		345,720,
@@ -126,7 +126,7 @@ bool ModulePhysics::Start()
 		322,784,
 		352,773
 	};
-	CreateChain(0, 0, triangleRight, 10,2);
+	chains.add(CreateChain(0, 0, triangleRight, 10,2, TypePhysbody::BOUNCER));
 	int segmentLeft[14] = {
 		73,542,
 		107,635,
@@ -230,9 +230,10 @@ bool ModulePhysics::Start()
 	ramp->body->SetActive(false);
 	// Bouncer bols
 	float bouncerBallsRestitution = 2;
-	CreateCircle(138, 189, 15, false, bouncerBallsRestitution);
-	CreateCircle(118, 254, 15, false, bouncerBallsRestitution);
+	CreateCircle(138, 189, 15, false, bouncerBallsRestitution)->type=TypePhysbody::BOUNCER_BALL;
+	CreateCircle(118, 254, 15, false, bouncerBallsRestitution)->type = TypePhysbody::BOUNCER_BALL;
 	bouncerBall = CreateCircle(188, 238, 15, false, bouncerBallsRestitution);
+	bouncerBall->type = TypePhysbody::BOUNCER_BALL;
 
 	//CreateFlipperL(154, 837);
 	//CreateFlipperR(100, 100);
@@ -257,6 +258,7 @@ update_status ModulePhysics::PreUpdate()
 			{
 				pb1->listener->OnCollision(pb1, pb2);
 				App->audio->PlayFx(App->scene_intro->bonus_fx);
+				App->audio->PlayFx(App->scene_intro->triangleBounceFx);
 			}
 		}
 	}
@@ -343,7 +345,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, float _restitution)
+PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, float _restitution, TypePhysbody _type)
 {
 	b2BodyDef body;
 	body.type = b2_staticBody;
@@ -375,7 +377,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, float 
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = 0;
-
+	pbody->type = _type;
 	return pbody;
 }
 

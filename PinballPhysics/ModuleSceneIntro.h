@@ -4,6 +4,9 @@
 #include "p2Point.h"
 #include "Globals.h"
 
+
+#include <string>
+
 class PhysBody;
 struct b2PrismaticJoint;
 
@@ -14,6 +17,8 @@ struct Kicker {
 	b2PrismaticJoint* joint;
 };
 
+
+
 class ModuleSceneIntro : public Module
 {
 public:
@@ -22,8 +27,11 @@ public:
 
 	bool Start();
 	update_status Update();
+	void DrawScore();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+	void WriteLetter(int x, int y, char letra);
+	int WriteWords(int x, int y, std::string frase);
 
 public:
 	p2List<PhysBody*> circles;
@@ -33,9 +41,11 @@ public:
 	SDL_Texture* bg;
 	SDL_Texture* assets;
 	uint bonus_fx;
+	uint triangleBounceFx;
 	p2Point<int> ray;
 	bool ray_on;
 
+	SDL_Rect scoreRect;
 	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;
 	Kicker kiker;
@@ -53,5 +63,8 @@ public:
 	PhysBody* rampSensor2;
 	PhysBody* rampSensorBack;
 	PhysBody* rampSensorBack2;
+
+
+	int score;
 
 };

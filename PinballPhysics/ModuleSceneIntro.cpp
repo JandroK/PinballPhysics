@@ -6,7 +6,11 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include "ModuleFonts.h"
 #include "p2Defs.h"
+
+#include <string.h>
+#include <sstream>
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -25,6 +29,7 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	triangleBounceFx = App->audio->LoadFx("pinball/bounceAxecopia.wav");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	bg = App->textures->Load("pinball/pinball_bg.png");
 	assets = App->textures->Load("pinball/background.png");
@@ -35,6 +40,7 @@ bool ModuleSceneIntro::Start()
 	kikerRect = { 281,87,31,96 };
 	kiker.anchor = App->physics->CreateStaticRectangle(455, 820, 5, 5);
 	kiker.body = App->physics->CreateRectangle(455, 750, 20, 10);
+	kiker.body->body->IsBullet();
 	kiker.joint = App->physics->CreatePrismaticJoint(kiker.anchor, kiker.body, 1, -80, -20, 50);
 
 	circles.add(App->physics->CreateCircle(450, 730, 12, true));
@@ -47,6 +53,9 @@ bool ModuleSceneIntro::Start()
 	sensorsList.add(rampSensor2 = App->physics->CreateRectangleSensor(270, 74, 5, 5));
 	sensorsList.add(rampSensorBack = App->physics->CreateRectangleSensor(192, 405, 5, 5));
 	sensorsList.add(rampSensorBack2 = App->physics->CreateRectangleSensor(305, 74, 5, 5));
+	App->fonts->Load("pinball/FontY.png", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,им?!*$%&()+-/:;<=>@__     ", 5, 720, 224);
+
+	scoreRect = {338,87,SCREEN_WIDTH,60};
 
 	return ret;
 }
@@ -92,6 +101,7 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+
 	App->renderer->Blit(bg, 0, 0);
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
 
@@ -214,7 +224,7 @@ update_status ModuleSceneIntro::Update()
 		circles.del(circles.getLast());
 		circles.add(App->physics->CreateCircle(450, 720, 12, true));
 		circles.getLast()->data->listener = this;
-		if(sensorBlock->body->IsActive()==true)sensorBlock->body->SetActive(false);
+		if(sensorBlock !=nullptr && sensorBlock->body->IsActive()==true)sensorBlock->body->SetActive(false);
 		sensed = false;
 	}
 	///Block input to kicker
@@ -248,16 +258,31 @@ update_status ModuleSceneIntro::Update()
 		BoolRampSensorBack = false;
 		rampDraw = false;
 	}
+	DrawScore();
+
 	return UPDATE_CONTINUE;
+}
+
+void ModuleSceneIntro::DrawScore()
+{
+	std::stringstream strs;
+	strs << score;
+	std::string temp_str = strs.str();
+	char* char_type = (char*)temp_str.c_str();
+	App->renderer->Blit(assets, 0, SCREEN_HEIGHT - 60, &scoreRect);
+	App->fonts->BlitText( 35,885, 0, char_type);
 }
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
-	
+	App->audio->PlayMusic("pinball/bounceAxe.wav");
+
 	if (bodyA == sensor  ||	bodyB == sensor ) {
 
 		App->audio->PlayFx(bonus_fx);
+		App->audio->PlayMusic("pinball/bounceAxe.wav");
+
 		sensed = true;
 	}
 
@@ -286,16 +311,19 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			BoolRampSensorBack = true;
 		}
 	}
-	/*
-	if(bodyA)
+
+	if(bodyA != nullptr&& bodyB != nullptr)
+	if (bodyA->type== TypePhysbody::BOUNCER || bodyB->type== TypePhysbody::BOUNCER)
 	{
-		bodyA->GetPosition(x, y);
-		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
+		App->audio->PlayFx(bonus_fx);
+		score += 10;
+	}
+	if(bodyA != nullptr&& bodyB != nullptr)
+	if (bodyA->type== TypePhysbody::BOUNCER_BALL || bodyB->type== TypePhysbody::BOUNCER_BALL)
+	{
+		App->audio->PlayFx(bonus_fx);
+		score += 10;
 	}
 
-	if(bodyB)
-	{
-		bodyB->GetPosition(x, y);
-		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
-	}*/
 }
+

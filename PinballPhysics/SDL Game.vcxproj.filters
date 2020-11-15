@@ -59,6 +59,12 @@
     <ClInclude Include="p2Defs.h">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Proyecto1_4HD\Project_7_Handout\Source\ModuleFonts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleFonts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -92,6 +98,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFontsc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

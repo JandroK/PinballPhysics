@@ -12,9 +12,16 @@
 #define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
 #define PIXEL_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
 
+	 enum class TypePhysbody {
+	NONE,
+	BOUNCER,
+	BOUNCER_BALL
+	};
+
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
-{
+{ 
+
 public:
 	PhysBody() : listener(NULL), body(NULL)
 	{}
@@ -28,6 +35,8 @@ public:
 	int width, height;
 	b2Body* body;
 	Module* listener;
+	char* name;
+	TypePhysbody type;
 };
 
 // Module --------------------------------------
@@ -45,7 +54,7 @@ public:
 	PhysBody* CreateCircle(int x, int y, int radius, bool dynamic, float _restitution=0);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
-	PhysBody* CreateChain(int x, int y, int* points, int size, float _restitution=0);
+	PhysBody* CreateChain(int x, int y, int* points, int size, float _restitution=0, TypePhysbody type= TypePhysbody::NONE);
 	PhysBody* CreateStaticRectangle(int x, int y, int width, int height, int _restitution=0);
 	b2PrismaticJoint* CreatePrismaticJoint(PhysBody* anchor, PhysBody* body, int max_move, int min_move, int motor_speed, int max_force);
 
@@ -88,5 +97,6 @@ public:
 	p2List<PhysBody*> flippersL;
 	p2List<PhysBody*> flippersR;
 	p2List<PhysBody*> circlesToDelete;
+	p2List<PhysBody*> chains;
 
 };
