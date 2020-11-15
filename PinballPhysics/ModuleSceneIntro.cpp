@@ -467,7 +467,9 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//Sensors of ramp upstairs
 	if (bodyA == rampBigSensor && bodyB == circles.getLast()->data ||
 		bodyB == rampBigSensor && bodyA == circles.getLast()->data){
-		if (score < scoreMax && !firstTime)score += 1100;
+		if (score < scoreMax && !firstTime) {
+			score += 1100; 			App->audio->PlayFx(bonus_fx);
+		}
 		firstTime = false;
 	}
 	if (bodyA == rampSensor && bodyB == circles.getLast()->data ||
@@ -477,7 +479,11 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 		if (boolRampSensor != true) {
 			boolRampSensor = true;
-			if (score < scoreMax)score += 1100;
+			if (score < scoreMax) {
+				score += 1100;
+				App->audio->PlayFx(bonus_fx);
+			}
+
 		}
 	}
 	if (bodyA == rampSensorBack && bodyB == circles.getLast()->data ||
@@ -499,6 +505,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (boolRampLeftSensor != true) {
 			boolRampLeftSensor = true;
 			if (score < scoreMax)score += 100;
+			App->audio->PlayFx(bonus_fx);
 		}
 	}
 	if (bodyA == rampLeftSensorBack && bodyB == circles.getLast()->data ||
@@ -519,6 +526,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 			App->audio->PlayFx(bonus_fx);
 			if (score < scoreMax)score += 100;
+			App->audio->PlayFx(bonus_fx);
+
 		}
 	if (bodyA != nullptr && bodyB != nullptr)
 		if (bodyA->type == TypePhysbody::BOUNCER_BALL || bodyB->type == TypePhysbody::BOUNCER_BALL)
@@ -527,6 +536,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 			App->audio->PlayFx(bonus_fx);
 			if (score < scoreMax)score += 100;
+			App->audio->PlayFx(bonus_fx);
+
 		}
 	//Sensors Ramp Right
 	if (bodyA == rampRightSensor && bodyB == circles.getLast()->data ||
@@ -537,6 +548,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (boolRampRightSensor != true) {
 			boolRampRightSensor = true;
 			if (score < scoreMax)score += 100;
+			App->audio->PlayFx(bonus_fx);
+
 		}
 	}
 	if (bodyA == rampRightSensorBack && bodyB == circles.getLast()->data ||
