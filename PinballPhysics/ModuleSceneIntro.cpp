@@ -29,8 +29,16 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	triangleBounceFx = App->audio->LoadFx("pinball/bounceAxecopia.wav");
+	App->audio->PlayMusic("pinball/sounds/music.wav");
+	triangleBounceFx = App->audio->LoadFx("pinball/sounds/bounce_axe.wav");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	kikerFx = App->audio->LoadFx("pinball/sounds/kiker_bounce.wav");
+	lifeLostFx = App->audio->LoadFx("pinball/sounds/life_lost.wav");
+	gameOverFx = App->audio->LoadFx("pinball/sounds/game_over.wav");
+	greatFx = App->audio->LoadFx("pinball/sounds/great.wav");
+
+
+
 	bg = App->textures->Load("pinball/pinball_bg.png");
 	assets = App->textures->Load("pinball/background.png");
 	gameOver = App->textures->Load("pinball/GameOver.png");
@@ -94,6 +102,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(circle);
 	App->textures->Unload(neon.texture);
 	App->textures->Unload(gameOver);
+	
 	return true;
 	LOG("Unloading map");
 
@@ -140,7 +149,8 @@ update_status ModuleSceneIntro::Update()
 			kiker.joint->SetMotorSpeed(-20);
 			kiker.joint->SetMaxMotorForce(900);
 
-			//App->audio->PlayFx();
+			//App->audio->PlayMusic("pinball/sounds/95596__3bagbrew__jaw-harp16.mp3");
+			App->audio->PlayFx(kikerFx);
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
@@ -366,6 +376,8 @@ update_status ModuleSceneIntro::Update()
 	
 	if ((score % 1000)==0 && score!=0 && !scoreBonus && checkNeon != score)
 	{
+		App->audio->PlayFx(greatFx);
+
 		checkNeon = score;
 		scoreBonus = true;
 		neonTimer->Start();
@@ -389,6 +401,7 @@ update_status ModuleSceneIntro::Update()
 	}
 	if (lives == 0)
 	{
+		App->audio->PlayFx(gameOverFx);
 		App->renderer->Blit(gameOver, 0, 0);
 		if (App->input->GetKey(SDL_SCANCODE_KP_ENTER) == KEY_DOWN
 			|| App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN
@@ -427,8 +440,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//Sensor Respawn Ball
 	if (bodyA == sensor || bodyB == sensor) {
 
-		App->audio->PlayFx(bonus_fx);
-		App->audio->PlayMusic("pinball/bounceAxe.wav");
+		App->audio->PlayFx(lifeLostFx);
 		lives--;
 		sensed = true;
 		firstTime = true;
@@ -491,12 +503,17 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	if (bodyA != nullptr && bodyB != nullptr)
 		if (bodyA->type == TypePhysbody::BOUNCER || bodyB->type == TypePhysbody::BOUNCER)
 		{
+
+			App->audio->PlayFx(triangleBounceFx);
+
 			App->audio->PlayFx(bonus_fx);
 			if (score < scoreMax)score += 100;
 		}
 	if (bodyA != nullptr && bodyB != nullptr)
 		if (bodyA->type == TypePhysbody::BOUNCER_BALL || bodyB->type == TypePhysbody::BOUNCER_BALL)
 		{
+			App->audio->PlayFx(triangleBounceFx);
+
 			App->audio->PlayFx(bonus_fx);
 			if (score < scoreMax)score += 100;
 		}
