@@ -55,17 +55,20 @@ bool ModuleSceneIntro::Start()
 	kikerInvisble = {281,202,33,47};
 	kikerRect = { 281,87,31,96 };
 	kiker.anchor = App->physics->CreateStaticRectangle(455, 820, 5, 5);
-	kiker.body = App->physics->CreateRectangle(455, 750, 20, 10);
+	kiker.body = App->physics->CreateRectangle(454, 750, 20, 10);
 	kiker.body->body->IsBullet();
-	kiker.joint = App->physics->CreatePrismaticJoint(kiker.anchor, kiker.body, 1, -80, -20, 50);
+	kiker.joint = App->physics->CreatePrismaticJoint(kiker.anchor, kiker.body, 0, -80, -20, 50);
 	sensorBlock = App->physics->CreateStaticRectangle(435, 97, 12, 69);
 	sensorBlock->body->SetActive(false);
 	circles.add(App->physics->CreateCircle(450, 730, 12, true));
 	circles.getLast()->data->listener = this;
 
+	// Sensor Kiker
+	sensorsList.add(kickerForceSensor = App->physics->CreateRectangleSensor(453, 665, 25, 5));
+	sensorsList.add(kickerPathSensor = App->physics->CreateRectangleSensor(420, 90, 5, 85));
+
 	//Sensors upstairs
 	sensorsList.add(sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 35, SCREEN_WIDTH, 25));
-	sensorsList.add(kickerPathSensor = App->physics->CreateRectangleSensor(420, 90, 5, 85));
 	sensorsList.add(rampSensor = App->physics->CreateRectangleSensor(192, 370, 5, 5));
 	sensorsList.add(rampSensor2 = App->physics->CreateRectangleSensor(270, 74, 5, 5));
 	sensorsList.add(rampSensorBack = App->physics->CreateRectangleSensor(192, 405, 5, 5));
@@ -147,7 +150,8 @@ update_status ModuleSceneIntro::Update()
 		}
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_UP || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
 			kiker.joint->SetMotorSpeed(-20);
-			kiker.joint->SetMaxMotorForce(900);
+			kiker.joint->SetMaxMotorForce(700);
+
 
 			//App->audio->PlayMusic("pinball/sounds/95596__3bagbrew__jaw-harp16.mp3");
 			App->audio->PlayFx(kikerFx);
@@ -449,13 +453,20 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	int x, y;
 
 	//Sensor Respawn Ball
-	if (bodyA == sensor || bodyB == sensor) {
+	if (bodyA == sensor || bodyB == sensor) 
+	{
 
 		lives--;
 		sensed = true;
 		firstTime = true;
 		if(lives>0)App->audio->PlayFx(lifeLostFx);
 	}
+
+	if (bodyA == kickerForceSensor || bodyB == kickerForceSensor)
+	{	
+		kiker.joint->SetMaxMotorForce(50);
+	}
+
 	//Sensor input kicker block
 	if (bodyA == kickerPathSensor && bodyB == circles.getLast()->data ||
 		bodyB == kickerPathSensor && bodyA == circles.getLast()->data) {

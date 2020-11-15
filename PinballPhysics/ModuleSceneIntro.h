@@ -97,6 +97,7 @@ public:
 	//Sensors
 	p2List<PhysBody*> sensorsList;
 	PhysBody* kickerPathSensor;
+	PhysBody* kickerForceSensor;
 	PhysBody* sensor;
 	PhysBody* rampSensor;
 	PhysBody* rampSensor2;
