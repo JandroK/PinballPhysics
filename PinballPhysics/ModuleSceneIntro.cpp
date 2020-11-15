@@ -414,6 +414,7 @@ update_status ModuleSceneIntro::Update()
 			lives = 5;
 			score = 0;
 			App->audio->PlayMusic("pinball/sounds/music.wav");
+			gameOverFxPlay = false;
 		}
 	}
 	if (score % 100000 == 0 && score != 0)lives++, score += 100;//cada 100000 puntos consigues una vida extra
