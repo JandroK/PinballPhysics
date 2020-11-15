@@ -28,7 +28,14 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	bg = App->textures->Load("pinball/pinball_bg.png");
 	assets = App->textures->Load("pinball/background.png");
-	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT+35, SCREEN_WIDTH, 25);
+	neon.texture = App->textures->Load("pinball/Neon.png");
+	neon.position = { 0 , 0 };
+	idleAnim.PushBack({ 0,0,465,711 }) ;
+	idleAnim.PushBack({ 465,0,465,711 });
+	idleAnim.loop = true;
+	idleAnim.speed = 0.1f;
+	neon.currentAnimation = &idleAnim;
+
 
 	//Kicker
 	kikerInvisble = {281,202,31,47};
@@ -335,6 +342,12 @@ update_status ModuleSceneIntro::Update()
 		rect = { 208,87,61,115 };
 		App->renderer->Blit(assets, 326, 451, &rect);
 	}
+	//Animation of Neon-------------------
+	//neon.currentAnimation->Update();
+	//SDL_Rect rectPlayer;
+	//rectPlayer = neon.currentAnimation->GetCurrentFrame();
+	//App->renderer->Blit(neon.texture, 0, 0, &rectPlayer);
+
 	return UPDATE_CONTINUE;
 }
 

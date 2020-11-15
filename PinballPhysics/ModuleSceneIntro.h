@@ -4,9 +4,16 @@
 #include "p2Point.h"
 #include "Globals.h"
 #include "Timer.h"
+#include "Animation.h"
+
 class PhysBody;
 struct b2PrismaticJoint;
-
+struct AnimationIntro
+{
+	iPoint position;
+	Animation* currentAnimation;
+	SDL_Texture* texture;
+};
 
 struct Kicker {
 	PhysBody* anchor;
@@ -28,6 +35,9 @@ public:
 public:
 	p2List<PhysBody*> circles;
 	bool sensed;
+
+	AnimationIntro neon;
+	Animation idleAnim;
 
 	SDL_Texture* circle;
 	SDL_Texture* bg;

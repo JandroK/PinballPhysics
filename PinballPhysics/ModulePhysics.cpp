@@ -231,8 +231,8 @@ bool ModulePhysics::Start()
 	//Sensors ramp left
 	int wayLeftLineCollision1[8] = {
 		67,426,
-		108,522,
-		108,521,
+		98,515,
+		98,514,
 		67,425,
 	};
 	wayLeftLine1 = CreateChain(0, 0, wayLeftLineCollision1, 8);
