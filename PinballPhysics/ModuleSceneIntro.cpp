@@ -401,7 +401,11 @@ update_status ModuleSceneIntro::Update()
 	}
 	if (lives == 0)
 	{
-		App->audio->PlayFx(gameOverFx);
+		if (!gameOverFxPlay)
+		{
+			App->audio->PlayFx(gameOverFx);
+			gameOverFxPlay = true;
+		}
 		App->renderer->Blit(gameOver, 0, 0);
 		if (App->input->GetKey(SDL_SCANCODE_KP_ENTER) == KEY_DOWN
 			|| App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN

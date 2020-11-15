@@ -91,6 +91,7 @@ public:
 	bool bouncerBallHit1 = false;
 	bool bouncerBallHit2 = false;
 	bool bouncerBallHit3 = false;
+	bool gameOverFxPlay = false;
 
 	//Sensors
 	p2List<PhysBody*> sensorsList;
