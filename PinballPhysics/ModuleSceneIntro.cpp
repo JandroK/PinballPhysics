@@ -33,6 +33,7 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	bg = App->textures->Load("pinball/pinball_bg.png");
 	assets = App->textures->Load("pinball/background.png");
+	gameOver = App->textures->Load("pinball/GameOver.png");
 	neon.texture = App->textures->Load("pinball/Neon.png");
 	neon.position = { 0 , 0 };
 	idleAnim.PushBack({ 0,0,465,711 }) ;
@@ -86,6 +87,8 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(bg);
 	App->textures->Unload(assets);
 	App->textures->Unload(circle);
+	App->textures->Unload(neon.texture);
+	App->textures->Unload(gameOver);
 	return true;
 	LOG("Unloading map");
 
@@ -119,55 +122,56 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-
 	App->renderer->Blit(bg, 0, 0);
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
-
-		kiker.joint->SetMotorSpeed(3);
-		kiker.joint->SetMaxMotorForce(3);
-
-	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_UP) {
-		kiker.joint->SetMotorSpeed(-20);
-		kiker.joint->SetMaxMotorForce(900);
-
-		//App->audio->PlayFx();
-	}
-		
-	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	if (lives != 0)
 	{
-		ray_on = !ray_on;
-		ray.x = App->input->GetMouseX();
-		ray.y = App->input->GetMouseY();
-	}
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN) {
 
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 12, true));
-		circles.getLast()->data->listener = this;
-	}
-	
-	// Flipper Torque
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-	{
-		p2List_item<PhysBody*>* data = App->physics->flippersL.getFirst();
-		while (data != NULL)
+			kiker.joint->SetMotorSpeed(3);
+			kiker.joint->SetMaxMotorForce(3);
+
+		}
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_UP) {
+			kiker.joint->SetMotorSpeed(-20);
+			kiker.joint->SetMaxMotorForce(900);
+
+			//App->audio->PlayFx();
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 		{
-			data->data->body->ApplyTorque(-400, true);
-			data = data->next;
+			ray_on = !ray_on;
+			ray.x = App->input->GetMouseX();
+			ray.y = App->input->GetMouseY();
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		{
+			circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 12, true));
+			circles.getLast()->data->listener = this;
+		}
+
+		// Flipper Torque
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		{
+			p2List_item<PhysBody*>* data = App->physics->flippersL.getFirst();
+			while (data != NULL)
+			{
+				data->data->body->ApplyTorque(-400, true);
+				data = data->next;
+			}
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		{
+			p2List_item<PhysBody*>* data = App->physics->flippersR.getFirst();
+			while (data != NULL)
+			{
+				data->data->body->ApplyTorque(400, true);
+				data = data->next;
+			}
 		}
 	}
-
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-	{
-		p2List_item<PhysBody*>* data = App->physics->flippersR.getFirst();
-		while (data != NULL)
-		{
-			data->data->body->ApplyTorque(400, true);
-			data = data->next;
-		}
-	}
-
 	// Prepare for raycast ------------------------------------------------------
 	
 	iPoint mouse;
@@ -376,7 +380,15 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->Blit(neon.texture, 0, 0, &rectPlayer);
 		}
 	}
+	if (lives == 0)
+	{
+		App->renderer->Blit(gameOver, 0, 0);
+		if (App->input->GetKey(SDL_SCANCODE_KP_ENTER) == KEY_DOWN
+			|| App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN
+			|| App->input->GetKey(SDL_SCANCODE_RETURN2) == KEY_DOWN)lives = 5, score = 0;
+	}
 	DrawScore();
+	DrawLives();
 	return UPDATE_CONTINUE;
 }
 
@@ -389,6 +401,14 @@ void ModuleSceneIntro::DrawScore()
 	App->renderer->Blit(assets, 0, SCREEN_HEIGHT - 60, &scoreRect);
 	App->fonts->BlitText( 35,885, 0, char_type);
 }
+void ModuleSceneIntro::DrawLives()
+{
+	std::stringstream strsLives;
+	strsLives << lives;
+	std::string temp_strLives = strsLives.str();
+	char* char_typeLives = (char*)temp_strLives.c_str();
+	App->fonts->BlitText(400, 885, 0, char_typeLives);
+}
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
@@ -399,7 +419,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 		App->audio->PlayFx(bonus_fx);
 		App->audio->PlayMusic("pinball/bounceAxe.wav");
-
+		lives--;
 		sensed = true;
 	}
 	//Sensor input kicker block

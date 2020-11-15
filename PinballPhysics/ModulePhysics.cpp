@@ -553,7 +553,7 @@ update_status ModulePhysics::PostUpdate()
 			}
 
 			// TODO 1: If mouse button 1 is pressed test if the current body contains mouse position
-			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && isClicked == false)
+			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && isClicked == false && App->scene_intro->lives!=0)
 			{
 				bodyClicked = new PhysBody();
 				bodyClicked->body = b;

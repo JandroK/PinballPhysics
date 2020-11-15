@@ -34,6 +34,7 @@ public:
 	bool Start();
 	update_status Update();
 	void DrawScore();
+	void DrawLives();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
@@ -48,13 +49,14 @@ public:
 	SDL_Texture* circle;
 	SDL_Texture* bg;
 	SDL_Texture* assets;
+	SDL_Texture* gameOver;
 	uint bonus_fx;
 	uint triangleBounceFx;
 	p2Point<int> ray;
 	bool ray_on;
 	bool scoreBonus = false;
 	int checkNeon = 0;
-
+	int lives = 5;
 	SDL_Rect scoreRect;
 	SDL_Rect kikerInvisble;
 	SDL_Rect kikerRect;
