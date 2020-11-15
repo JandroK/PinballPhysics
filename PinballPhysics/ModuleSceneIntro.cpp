@@ -76,6 +76,10 @@ bool ModuleSceneIntro::Start()
 	sensorsList.add(rampRightSensorBack = App->physics->CreateRectangleSensor(376, 465, 5, 5));
 	sensorsList.add(rampRightSensorBack2 = App->physics->CreateRectangleSensor(368, 678, 5, 5));
 
+	App->physics->CreateStaticRectangle(345, 141, 10, 20);
+	App->physics->CreateStaticRectangle(387, 141, 10, 20);
+	App->physics->CreateStaticRectangle(87, 736, 10, 30);
+
 	return ret;
 }
 
