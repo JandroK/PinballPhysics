@@ -70,6 +70,7 @@ bool ModuleSceneIntro::Start()
 	sensorsList.add(rampSensor2 = App->physics->CreateRectangleSensor(270, 74, 5, 5));
 	sensorsList.add(rampSensorBack = App->physics->CreateRectangleSensor(192, 405, 5, 5));
 	sensorsList.add(rampSensorBack2 = App->physics->CreateRectangleSensor(305, 74, 5, 5));
+	sensorsList.add(rampBigSensor = App->physics->CreateRectangleSensor(285, 30, 5, 5));
 	App->fonts->Load("pinball/FontY.png", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,им?!*$%&()+-/:;<=>@__     ", 5, 720, 224);
 
 	scoreRect = {338,87,SCREEN_WIDTH,60};
@@ -322,14 +323,16 @@ update_status ModuleSceneIntro::Update()
 	//Sensors Right
 	if (boolRampRightSensor)
 	{
-		App->physics->wayRightLine->body->SetActive(false);
+		App->physics->wayRightLine1->body->SetActive(false);
+		App->physics->wayRightLine2->body->SetActive(false);
 		App->physics->wayRightChain->body->SetActive(true);
 		boolRampRightSensor = false;
 		rampRightDraw = false;
 	}
 	if (boolRampRightSensorBack)
 	{
-		App->physics->wayRightLine->body->SetActive(true);
+		App->physics->wayRightLine1->body->SetActive(true);
+		App->physics->wayRightLine2->body->SetActive(true);
 		App->physics->wayRightChain->body->SetActive(false);
 		boolRampRightSensorBack = false;
 		rampRightDraw = true;
@@ -371,7 +374,7 @@ update_status ModuleSceneIntro::Update()
 	}
 	//Animation of Neon-------------------
 	
-	if ((score % 100)==0 && score!=0 && !scoreBonus && checkNeon != score)
+	if ((score % 1000)==0 && score!=0 && !scoreBonus && checkNeon != score)
 	{
 		App->audio->PlayFx(greatFx);
 
@@ -450,6 +453,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		}
 	}
 	//Sensors of ramp upstairs
+	if (bodyA == rampBigSensor && bodyB == circles.getLast()->data ||
+		bodyB == rampBigSensor && bodyA == circles.getLast()->data){
+		if (score <= 9999999)score += 100;
+	}
 	if (bodyA == rampSensor && bodyB == circles.getLast()->data ||
 		bodyB == rampSensor && bodyA == circles.getLast()->data ||
 		bodyA == rampSensor2 && bodyB == circles.getLast()->data ||
@@ -457,6 +464,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 		if (boolRampSensor != true) {
 			boolRampSensor = true;
+			if (score <= 9999999)score += 100;
 		}
 	}
 	if (bodyA == rampSensorBack && bodyB == circles.getLast()->data ||
@@ -477,6 +485,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 		if (boolRampLeftSensor != true) {
 			boolRampLeftSensor = true;
+			if (score <= 9999999)score += 100;
 		}
 	}
 	if (bodyA == rampLeftSensorBack && bodyB == circles.getLast()->data ||
@@ -492,14 +501,19 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	if (bodyA != nullptr && bodyB != nullptr)
 		if (bodyA->type == TypePhysbody::BOUNCER || bodyB->type == TypePhysbody::BOUNCER)
 		{
+
 			App->audio->PlayFx(triangleBounceFx);
-			score += 10;
+
+			App->audio->PlayFx(bonus_fx);
+			if (score <= 9999999)score += 100;
 		}
 	if (bodyA != nullptr && bodyB != nullptr)
 		if (bodyA->type == TypePhysbody::BOUNCER_BALL || bodyB->type == TypePhysbody::BOUNCER_BALL)
 		{
 			App->audio->PlayFx(triangleBounceFx);
-			score += 10;
+
+			App->audio->PlayFx(bonus_fx);
+			if (score <= 9999999)score += 100;
 		}
 	//Sensors Ramp Right
 	if (bodyA == rampRightSensor && bodyB == circles.getLast()->data ||
@@ -509,6 +523,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 		if (boolRampRightSensor != true) {
 			boolRampRightSensor = true;
+			if (score <= 9999999)score += 100;
 		}
 	}
 	if (bodyA == rampRightSensorBack && bodyB == circles.getLast()->data ||

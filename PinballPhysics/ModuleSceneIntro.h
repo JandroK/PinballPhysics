@@ -107,6 +107,7 @@ public:
 	PhysBody* rampRightSensor2;
 	PhysBody* rampRightSensorBack;
 	PhysBody* rampRightSensorBack2;
+	PhysBody* rampBigSensor;
 
 
 	int score;

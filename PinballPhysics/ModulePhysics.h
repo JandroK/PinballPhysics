@@ -99,7 +99,8 @@ public:
 	PhysBody* wayLeftLine1;
 	PhysBody* wayLeftLine2;
 	PhysBody* wayLeftChain;
-	PhysBody* wayRightLine;
+	PhysBody* wayRightLine1;
+	PhysBody* wayRightLine2;
 	PhysBody* wayRightChain;
 	p2List<PhysBody*> flippersL;
 	p2List<PhysBody*> flippersR;

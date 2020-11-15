@@ -272,13 +272,20 @@ bool ModulePhysics::Start()
 	wayLeftChain = CreateChain(0, 0, wayLeftChainCollision, 48);
 	wayLeftChain->body->SetActive(false);
 	//Sensors ramp right
-	int wayRightLineCollision[8] = {
+	int wayRightLineCollision1[8] = {
 		321,423,
 		325,518,
 		326,518,
 		366,426,
 	};
-	wayRightLine = CreateChain(0, 0, wayRightLineCollision, 8);
+	wayRightLine1 = CreateChain(0, 0, wayRightLineCollision1, 8);
+	int wayRightLineCollision2[8] = {
+		379,517,
+		368,555,
+		368,556,
+		379,518,
+	};
+	wayRightLine2 = CreateChain(0, 0, wayRightLineCollision2, 8);
 	int wayRightChainCollision[42] = {
 		379,526,
 		358,505,
