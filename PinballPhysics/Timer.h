@@ -1,25 +1,21 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include "Timer.h"
-//#include "Module.h"
+#include "Globals.h"
 
-
-class Timer {
+class Timer
+{
 public:
-	Timer(int miliseconds = 1000);
-	~Timer() {
-		delete[] this;
-	};
-	int ready();
-	int check();
-	void update();
+
+	// Constructor
+	Timer();
+
+	void Start();
+	int Read() const;
+	float ReadSec() const;
+	bool check(int interval);
 
 private:
-	int last_time;
-	int cur_time;
-	int acumulator;
-	int total;
-	int interval;
+	int startTime;
 };
 #endif // MODULE_TIMER_H

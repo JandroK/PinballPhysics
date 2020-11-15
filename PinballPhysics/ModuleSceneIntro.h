@@ -52,6 +52,8 @@ public:
 	uint triangleBounceFx;
 	p2Point<int> ray;
 	bool ray_on;
+	bool scoreBonus = false;
+	int checkNeon = 0;
 
 	SDL_Rect scoreRect;
 	SDL_Rect kikerInvisble;
@@ -59,9 +61,10 @@ public:
 	Kicker kiker;
 
 	//Timer
-	Timer* timerBouncerBallHit1= new Timer(600);
-	Timer* timerBouncerBallHit2= new Timer(600);
-	Timer* timerBouncerBallHit3= new Timer(600);
+	Timer* timerBouncerBallHit1= new Timer();
+	Timer* timerBouncerBallHit2= new Timer();
+	Timer* timerBouncerBallHit3= new Timer();
+	Timer* neonTimer = new Timer();
 
 	//Variables to sensors
 	PhysBody* sensorBlock;

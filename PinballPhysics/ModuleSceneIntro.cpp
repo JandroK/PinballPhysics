@@ -256,10 +256,7 @@ update_status ModuleSceneIntro::Update()
 	}
 	if(FlipperKickerup)//Active collison of block input in the kicker
 		sensorBlock->body->SetActive(true);
-	//Timer
-	timerBouncerBallHit1->update();
-	timerBouncerBallHit2->update();
-	timerBouncerBallHit3->update();
+	
 	//Active Desactive Collisions----------------------------------
 
 	//Sensors upstairs
@@ -319,22 +316,23 @@ update_status ModuleSceneIntro::Update()
 		boolRampRightSensorBack = false;
 		rampRightDraw = true;
 	}
+
 	//Hit of Bouncer Balls
 	rect = { 1832,12,56,53 };
 	if (bouncerBallHit1)
 	{
 		App->renderer->Blit(assets, 110, 162, &rect);
-		if(timerBouncerBallHit1->check())bouncerBallHit1 = false;
+		if(timerBouncerBallHit1->check(200))bouncerBallHit1 = false;
 	}
 	if (bouncerBallHit2)
 	{
 		App->renderer->Blit(assets, 90, 227, &rect);
-		if (timerBouncerBallHit2->check())bouncerBallHit2 = false;
+		if (timerBouncerBallHit2->check(200))bouncerBallHit2 = false;
 	}
 	if (bouncerBallHit3)
 	{
 		App->renderer->Blit(assets, 157, 210, &rect);
-		if (timerBouncerBallHit3->check())bouncerBallHit3 = false;
+		if (timerBouncerBallHit3->check(200))bouncerBallHit3 = false;
 	}
 	//Draw Ramp
 	if (rampDraw)
@@ -354,13 +352,31 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(assets, 326, 451, &rect);
 	}
 	//Animation of Neon-------------------
-	//neon.currentAnimation->Update();
-	//SDL_Rect rectPlayer;
-	//rectPlayer = neon.currentAnimation->GetCurrentFrame();
-	//App->renderer->Blit(neon.texture, 0, 0, &rectPlayer);
+	
+	if ((score % 100)==0 && score!=0 && !scoreBonus && checkNeon != score)
+	{
+		checkNeon = score;
+		scoreBonus = true;
+		neonTimer->Start();
+	}
+
+	if (scoreBonus)
+	{
+		
+		if (neonTimer->check(2000))
+		{
+			scoreBonus = false;
+			checkNeon = score;
+		}
+		if (!neonTimer->check(2000))
+		{
+			neon.currentAnimation->Update();
+			SDL_Rect rectPlayer;
+			rectPlayer = neon.currentAnimation->GetCurrentFrame();
+			App->renderer->Blit(neon.texture, 0, 0, &rectPlayer);
+		}
+	}
 	DrawScore();
-
-
 	return UPDATE_CONTINUE;
 }
 
@@ -471,18 +487,21 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bouncerBallHit1 != true) {
 			bouncerBallHit1 = true;
 		}
+		timerBouncerBallHit1->Start();
 	}
 	if (bodyA == App->physics->bouncerBall2 && bodyB == circles.getLast()->data ||
 		bodyB == App->physics->bouncerBall2 && bodyA == circles.getLast()->data) {
 		if (bouncerBallHit2 != true) {
 			bouncerBallHit2 = true;
 		}
+		timerBouncerBallHit2->Start();
 	}
 	if (bodyA == App->physics->bouncerBall3 && bodyB == circles.getLast()->data ||
 		bodyB == App->physics->bouncerBall3 && bodyA == circles.getLast()->data) {
 		if (bouncerBallHit3 != true) {
 			bouncerBallHit3 = true;
 		}
+		timerBouncerBallHit3->Start();
 	}
 }
 
